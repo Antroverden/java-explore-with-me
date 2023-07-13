@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.stats.dto.EndpointHitDto;
 import ru.practicum.stats.entity.ViewStats;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -24,11 +26,11 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public ViewStats getStats(
+    public List<ViewStats> getStats(
             @RequestParam String start,
             @RequestParam String end,
             @RequestParam(required = false) String[] uris,
-            @RequestParam(required = false, defaultValue = "false") Boolean unique) {
+            @RequestParam(required = false) boolean unique) {
         return statsService.getStats(start, end, uris, unique);
     }
 }

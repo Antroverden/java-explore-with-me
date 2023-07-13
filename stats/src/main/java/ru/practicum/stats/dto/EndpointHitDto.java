@@ -3,9 +3,6 @@ package ru.practicum.stats.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
