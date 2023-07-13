@@ -1,4 +1,4 @@
-package ru.practicum.stats.entity;
+package ru.practicum.stats.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ViewStats {
+public class ViewStatsDto {
     String app;
     String uri;
     Integer hits;

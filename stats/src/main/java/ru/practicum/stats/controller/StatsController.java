@@ -6,7 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stats.dto.EndpointHitDto;
-import ru.practicum.stats.entity.ViewStats;
+import ru.practicum.stats.dto.ViewStatsDto;
+import ru.practicum.stats.service.StatsService;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public List<ViewStats> getStats(
+    public List<ViewStatsDto> getStats(
             @RequestParam String start,
             @RequestParam String end,
             @RequestParam(required = false) String[] uris,

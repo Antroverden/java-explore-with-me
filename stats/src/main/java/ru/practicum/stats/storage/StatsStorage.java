@@ -1,4 +1,4 @@
-package ru.practicum.stats.controller;
+package ru.practicum.stats.storage;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.practicum.stats.entity.EndpointHit;
-import ru.practicum.stats.entity.ViewStats;
+import ru.practicum.stats.model.EndpointHit;
+import ru.practicum.stats.model.ViewStats;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

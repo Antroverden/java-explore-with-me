@@ -1,7 +1,7 @@
-package ru.practicum.stats.controller;
+package ru.practicum.stats.storage;
 
-import ru.practicum.stats.entity.EndpointHit;
-import ru.practicum.stats.entity.ViewStats;
+import ru.practicum.stats.model.EndpointHit;
+import ru.practicum.stats.model.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
