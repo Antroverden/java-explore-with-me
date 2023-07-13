@@ -11,5 +11,6 @@ import java.util.List;
 public interface ViewStatsMapper {
 
     ViewStatsMapper INSTANCE = Mappers.getMapper(ViewStatsMapper.class);
+
     List<ViewStatsDto> toViewStatsDto(List<ViewStats> viewStats);
 }
