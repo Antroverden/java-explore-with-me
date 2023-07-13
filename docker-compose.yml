@@ -5,6 +5,8 @@ services:
     container_name: stats-server
     ports:
       - "9090:9090"
+    depends_on:
+      - stats-db
 
   stats-db:
     image: postgres:14-alpine
@@ -21,6 +23,8 @@ services:
     container_name: ewm-service
     ports:
       - "8080:8080"
+    depends_on:
+      - ewm-db
 
   ewm-db:
     image: postgres:14-alpine
