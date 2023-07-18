@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.practicum.mainservice.model.request.EventRequestStatusUpdateRequest;
 import ru.practicum.mainservice.model.request.NewEventDto;
 import ru.practicum.mainservice.model.request.UpdateEventAdminRequest;

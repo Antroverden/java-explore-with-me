@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.request.UpdateEventAdminRequest;
-import ru.practicum.mainservice.model.response.CompilationDto;
 import ru.practicum.mainservice.model.response.EventFullDto;
 import ru.practicum.mainservice.service.EventService;
 

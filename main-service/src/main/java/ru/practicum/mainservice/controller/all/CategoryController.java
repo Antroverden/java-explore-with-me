@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.response.CategoryDto;
-import ru.practicum.mainservice.model.response.CompilationDto;
 import ru.practicum.mainservice.service.CategoryService;
 
 import java.util.List;
@@ -17,6 +16,7 @@ import java.util.List;
 public class CategoryController {
 
     CategoryService categoryService;
+
     @GetMapping
     public List<CategoryDto> getCategories(
             @RequestParam Integer from,
