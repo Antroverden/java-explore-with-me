@@ -1,21 +1,28 @@
 package ru.practicum.mainservice.model.response;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.mainservice.model.request.Location;
 
+@Builder
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventFullDto {
-    private String annotation;
-    private CategoryDto category;
-    private Long confirmedRequests;
-    private String createdOn;
-    private String description;
-    private String eventDate;
-    private Long id;
-    private UserShortDto initiator;
-    private Location location;
-    private Boolean paid;
-    private Integer participantLimit;
-    private String publishedOn;
-    private Boolean requestModeration;
+    String annotation;
+    CategoryDto category;
+    Long confirmedRequests;
+    String createdOn;
+    String description;
+    String eventDate;
+    Long id;
+    UserShortDto initiator;
+    Location location;
+    Boolean paid;
+    Integer participantLimit;
+    String publishedOn;
+    Boolean requestModeration;
 
     public enum StateEnum {PENDING, PUBLISHED, CANCELED}
 }

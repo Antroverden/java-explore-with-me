@@ -1,14 +1,22 @@
 package ru.practicum.mainservice.model.request;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Builder
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpdateEventAdminRequest {
-    private String annotation;
-    private Long category;
-    private String description;
-    private String eventDate;
-    private Location location;
-    private Boolean paid;
-    private Integer participantLimit;
-    private Boolean requestModeration;
+    String annotation;
+    Long category;
+    String description;
+    String eventDate;
+    Location location;
+    Boolean paid;
+    Integer participantLimit;
+    Boolean requestModeration;
 
     public enum StateActionEnum {PUBLISH_EVENT, REJECT_EVENT}
 }

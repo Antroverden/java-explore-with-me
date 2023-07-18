@@ -1,8 +1,14 @@
 package ru.practicum.mainservice.model.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+@Builder
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 public class NewUserRequest {
-    private String email;
-    private String name;
+    String email;
+    String name;
 }

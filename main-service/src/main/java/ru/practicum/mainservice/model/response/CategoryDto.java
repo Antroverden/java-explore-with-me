@@ -1,7 +1,14 @@
 package ru.practicum.mainservice.model.response;
 
-public class CategoryDto {
-    private Long id;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-    private String name;
+@Builder
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
+public class CategoryDto {
+    Long id;
+    String name;
 }

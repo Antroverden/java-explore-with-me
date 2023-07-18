@@ -1,11 +1,17 @@
 package ru.practicum.mainservice.model.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+@Builder
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 public class ParticipationRequestDto {
-    private String created;
-    private Long event;
-    private Long id;
-    private Long requester;
-    private String status;
+    String created;
+    Long event;
+    Long id;
+    Long requester;
+    String status;
 }
