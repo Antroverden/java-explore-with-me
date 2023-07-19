@@ -13,7 +13,6 @@ import ru.practicum.mainservice.mapper.CategoryMapper;
 import ru.practicum.mainservice.model.response.CategoryDto;
 import ru.practicum.mainservice.storage.CategoryRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service

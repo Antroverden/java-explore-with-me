@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.response.CategoryDto;
-import ru.practicum.mainservice.model.response.CompilationDto;
 import ru.practicum.mainservice.service.CategoryService;
 
 @RestController

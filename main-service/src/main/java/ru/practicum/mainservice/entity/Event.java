@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.mainservice.model.request.LocationDto;
-import ru.practicum.mainservice.model.response.CategoryDto;
-import ru.practicum.mainservice.model.response.UserShortDto;
 
 import javax.persistence.*;
 

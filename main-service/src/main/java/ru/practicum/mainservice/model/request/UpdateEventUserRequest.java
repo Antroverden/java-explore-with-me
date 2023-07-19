@@ -13,7 +13,7 @@ public class UpdateEventUserRequest {
     Long category;
     String description;
     String eventDate;
-    Location location;
+    LocationDto location;
     Boolean paid;
     Integer participantLimit;
     Boolean requestModeration;
