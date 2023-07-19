@@ -13,10 +13,12 @@ public class UpdateEventAdminRequest {
     Long category;
     String description;
     String eventDate;
-    Location location;
+    LocationDto location;
     Boolean paid;
     Integer participantLimit;
     Boolean requestModeration;
+    StateAction stateAction;
+    String title;
 
-    public enum StateActionEnum {PUBLISH_EVENT, REJECT_EVENT}
+    public enum StateAction {PUBLISH_EVENT, REJECT_EVENT}
 }

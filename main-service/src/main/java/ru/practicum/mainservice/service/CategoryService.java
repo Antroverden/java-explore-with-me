@@ -3,11 +3,17 @@ package ru.practicum.mainservice.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.mainservice.entity.Category;
+import ru.practicum.mainservice.exception.ConflictException;
+import ru.practicum.mainservice.exception.NotFoundException;
+import ru.practicum.mainservice.mapper.CategoryMapper;
 import ru.practicum.mainservice.model.response.CategoryDto;
-import ru.practicum.mainservice.model.response.CompilationDto;
 import ru.practicum.mainservice.storage.CategoryRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -18,22 +24,42 @@ public class CategoryService {
     CategoryRepository categoryRepository;
 
     public CategoryDto addCategory(CategoryDto categoryDto) {
-
+        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
+        try {
+            Category savedCategory = categoryRepository.save(category);
+            return CategoryMapper.INSTANCE.toCategoryDto(savedCategory);
+        } catch (DataAccessException e) {
+            throw new ConflictException("Название категории " + category.getName() + " уже существует");
+        }
     }
 
-    public CompilationDto deleteCategory(Integer catId) {
-
+    public void deleteCategory(Integer catId) {
+        if (!categoryRepository.existsById(catId)) throw new NotFoundException("Категория не найдена");
+        try {
+            categoryRepository.deleteById(catId);
+        } catch (DataAccessException e) {
+            throw new ConflictException("Категория связана с другими");
+        }
     }
 
-    public CompilationDto changeCategory(Integer catId, CategoryDto categoryDto) {
-
+    public CategoryDto changeCategory(Integer catId, CategoryDto categoryDto) {
+        if (!categoryRepository.existsById(catId)) throw new NotFoundException("Категория не найдена");
+        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
+        try {
+            Category savedCategory = categoryRepository.save(category);
+            return CategoryMapper.INSTANCE.toCategoryDto(savedCategory);
+        } catch (DataAccessException e) {
+            throw new ConflictException("Название категории " + category.getName() + " уже существует");
+        }
     }
 
     public List<CategoryDto> getCategories(Integer from, Integer size) {
-
+        List<Category> categories = categoryRepository.findAll(PageRequest.of(from / size, size)).getContent();
+        return CategoryMapper.INSTANCE.toCategoryDtos(categories);
     }
 
     public CategoryDto getCategory(Integer catId) {
-
+        Category category = categoryRepository.findById(catId).orElseThrow(NotFoundException::new);
+        return CategoryMapper.INSTANCE.toCategoryDto(category);
     }
 }

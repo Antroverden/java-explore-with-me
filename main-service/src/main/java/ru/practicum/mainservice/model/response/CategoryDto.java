@@ -2,6 +2,7 @@ package ru.practicum.mainservice.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import javax.validation.constraints.NotBlank;
 
 @Builder
 @Data
@@ -10,5 +11,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class CategoryDto {
     Long id;
+    @NotBlank
     String name;
 }

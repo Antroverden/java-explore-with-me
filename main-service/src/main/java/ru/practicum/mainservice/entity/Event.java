@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.mainservice.model.request.LocationDto;
+import ru.practicum.mainservice.model.response.CategoryDto;
+import ru.practicum.mainservice.model.response.UserShortDto;
 
 import javax.persistence.*;
 
@@ -17,5 +20,26 @@ import javax.persistence.*;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Integer id;
+    String annotation;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    Category category;
+    Long confirmedRequests;
+    String createdOn;
+    String description;
+    String eventDate;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User initiator;
+    @Embedded
+    Location location;
+    Boolean paid;
+    Integer participantLimit;
+    String publishedOn;
+    Boolean requestModeration;
+    State state;
+    String title;
+
+    public enum State {PENDING, PUBLISHED, CANCELED}
 }

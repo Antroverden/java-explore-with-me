@@ -20,7 +20,7 @@ public class EventController {
 
     @GetMapping
     public List<EventFullDto> getEvents(
-            @RequestParam Integer[] users,
+            @RequestParam List<Integer> users,
             @RequestParam String[] states,
             @RequestParam Integer[] categories,
             @RequestParam String rangeStart,

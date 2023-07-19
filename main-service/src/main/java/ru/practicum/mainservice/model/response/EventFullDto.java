@@ -2,7 +2,8 @@ package ru.practicum.mainservice.model.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.mainservice.model.request.Location;
+import ru.practicum.mainservice.entity.Event;
+import ru.practicum.mainservice.model.request.LocationDto;
 
 @Builder
 @Data
@@ -16,13 +17,14 @@ public class EventFullDto {
     String createdOn;
     String description;
     String eventDate;
-    Long id;
+    Integer id;
     UserShortDto initiator;
-    Location location;
+    LocationDto location;
     Boolean paid;
     Integer participantLimit;
     String publishedOn;
     Boolean requestModeration;
-
-    public enum StateEnum {PENDING, PUBLISHED, CANCELED}
+    Event.State state;
+    String title;
+    Long views;
 }

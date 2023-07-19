@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler({BadRequestException.class, NumberFormatException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse userNotFoundExc(final BadRequestException e) {
         return new ErrorResponse(e.getMessage());
@@ -23,6 +23,12 @@ public class ErrorHandler {
     @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse userNotFoundExc(final ConflictException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse userNotFoundExc(final ForbiddenException e) {
         return new ErrorResponse(e.getMessage());
     }
 }

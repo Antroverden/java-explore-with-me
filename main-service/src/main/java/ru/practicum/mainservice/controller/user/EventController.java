@@ -3,6 +3,7 @@ package ru.practicum.mainservice.controller.user;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.request.EventRequestStatusUpdateRequest;
 import ru.practicum.mainservice.model.request.NewEventDto;
@@ -30,12 +31,13 @@ public class EventController {
     }
 
     @PostMapping
-    public CompilationDto addEvent(@PathVariable Integer userId, @RequestBody NewEventDto newEventDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public EventFullDto addEvent(@PathVariable Integer userId, @RequestBody NewEventDto newEventDto) {
         return eventService.addEvent(userId, newEventDto);
     }
 
     @GetMapping("{eventId}")
-    public List<EventFullDto> getEvent(@PathVariable Integer userId, @PathVariable Integer eventId) {
+    public EventFullDto getEvent(@PathVariable Integer userId, @PathVariable Integer eventId) {
         return eventService.getEvent(userId, eventId);
     }
 
