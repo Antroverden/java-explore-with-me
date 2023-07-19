@@ -24,6 +24,7 @@ public class ParticipationRequest {
     @ManyToOne
     @JoinColumn(name = "user_id")
     User requester;
+    @Enumerated(EnumType.STRING)
     Status status;
 
     public enum Status {PENDING, APPROVED, CANCELED}

@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateCompilationRequest {
-    List<Long> events;
+    List<Integer> events;
     Boolean pinned;
     String title;
 

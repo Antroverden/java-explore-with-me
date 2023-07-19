@@ -3,6 +3,7 @@ package ru.practicum.mainservice.model.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Builder
@@ -11,7 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewCompilationDto {
-    List<Long> events;
+    List<Integer> events;
     Boolean pinned;
+    @NotBlank
     String title;
 }
