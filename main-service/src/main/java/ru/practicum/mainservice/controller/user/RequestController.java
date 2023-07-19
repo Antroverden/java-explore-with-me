@@ -3,6 +3,7 @@ package ru.practicum.mainservice.controller.user;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.response.ParticipationRequestDto;
 import ru.practicum.mainservice.service.RequestService;
@@ -23,6 +24,7 @@ public class RequestController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto addRequest(@PathVariable Integer userId, @RequestParam Integer eventId) {
         return requestService.addRequest(userId, eventId);
     }

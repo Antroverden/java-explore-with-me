@@ -8,6 +8,7 @@ import ru.practicum.mainservice.model.response.EventFullDto;
 import ru.practicum.mainservice.model.response.EventShortDto;
 import ru.practicum.mainservice.service.EventService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -28,13 +29,15 @@ public class EventController {
             @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
             @RequestParam String sort,
             @RequestParam(required = false, defaultValue = "0") Integer from,
-            @RequestParam(required = false, defaultValue = "10") Integer size
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            HttpServletRequest request
     ) {
-        return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size,
+                request.getRemoteAddr());
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getEvent(@PathVariable Integer eventId) {
-        return eventService.getEvent(eventId);
+    public EventFullDto getEvent(@PathVariable Integer eventId, HttpServletRequest request) {
+        return eventService.getEvent(eventId, request.getRemoteAddr());
     }
 }

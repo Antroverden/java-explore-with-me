@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class Event {
     Long confirmedRequests;
     String createdOn;
     String description;
-    String eventDate;
+    LocalDateTime eventDate;
     @ManyToOne
     @JoinColumn(name = "user_id")
     User initiator;

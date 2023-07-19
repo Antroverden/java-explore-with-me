@@ -10,6 +10,8 @@ import ru.practicum.mainservice.service.EventService;
 
 import java.util.List;
 
+import static ru.practicum.mainservice.entity.Event.State;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/events")
@@ -21,8 +23,8 @@ public class EventController {
     @GetMapping
     public List<EventFullDto> getEvents(
             @RequestParam List<Integer> users,
-            @RequestParam String[] states,
-            @RequestParam Integer[] categories,
+            @RequestParam List<State> states,
+            @RequestParam List<Integer> categories,
             @RequestParam String rangeStart,
             @RequestParam String rangeEnd,
             @RequestParam(required = false, defaultValue = "0") Integer from,

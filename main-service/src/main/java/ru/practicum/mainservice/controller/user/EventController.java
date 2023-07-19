@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user/{userId}/events")
+@RequestMapping("/users/{userId}/events")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EventController {
 

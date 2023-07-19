@@ -3,15 +3,19 @@ package ru.practicum.mainservice.model.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
+import static ru.practicum.mainservice.entity.ParticipationRequest.Status;
+
 @Builder
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParticipationRequestDto {
-    String created;
-    Long event;
-    Long id;
-    Long requester;
-    String status;
+    Integer id;
+    LocalDateTime created;
+    Integer event;
+    Integer requester;
+    Status status;
 }
