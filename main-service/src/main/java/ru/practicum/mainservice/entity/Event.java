@@ -23,7 +23,7 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
-    Long confirmedRequests;
+    Integer confirmedRequests;
     String createdOn;
     String description;
     LocalDateTime eventDate;

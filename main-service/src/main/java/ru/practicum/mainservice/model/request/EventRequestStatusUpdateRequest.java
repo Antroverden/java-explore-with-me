@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventRequestStatusUpdateRequest {
-    List<Long> requestIds;
+    List<Integer> requestIds;
+    Status status;
 
-    public enum StatusEnum {CONFIRMED, REJECTED}
+    public enum Status {CONFIRMED, REJECTED}
 }

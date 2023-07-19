@@ -50,7 +50,7 @@ public class EventController {
     }
 
     @GetMapping("{eventId}/requests")
-    public ParticipationRequestDto getEventRequests(@PathVariable Integer userId, @PathVariable Integer eventId) {
+    public List<ParticipationRequestDto> getEventRequests(@PathVariable Integer userId, @PathVariable Integer eventId) {
         return eventService.getEventRequests(userId, eventId);
     }
 

@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.client.StatsClient;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.entity.Event.State;
+import ru.practicum.mainservice.entity.ParticipationRequest;
 import ru.practicum.mainservice.entity.User;
+import ru.practicum.mainservice.exception.BadRequestException;
 import ru.practicum.mainservice.exception.ConflictException;
 import ru.practicum.mainservice.exception.ForbiddenException;
 import ru.practicum.mainservice.exception.NotFoundException;
 import ru.practicum.mainservice.mapper.EventMapper;
+import ru.practicum.mainservice.mapper.RequestMapper;
 import ru.practicum.mainservice.model.request.EventRequestStatusUpdateRequest;
 import ru.practicum.mainservice.model.request.NewEventDto;
 import ru.practicum.mainservice.model.request.UpdateEventAdminRequest;
@@ -22,6 +25,7 @@ import ru.practicum.mainservice.model.response.EventRequestStatusUpdateResult;
 import ru.practicum.mainservice.model.response.EventShortDto;
 import ru.practicum.mainservice.model.response.ParticipationRequestDto;
 import ru.practicum.mainservice.storage.EventRepository;
+import ru.practicum.mainservice.storage.RequestRepository;
 import ru.practicum.mainservice.storage.UserRepository;
 import ru.practicum.stats.dto.EndpointHitDto;
 
@@ -42,6 +46,7 @@ public class EventService {
     EventRepository eventRepository;
     UserRepository userRepository;
     StatsClient statsClient;
+    RequestRepository requestRepository;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public List<EventShortDto> getEvents(Integer userId, Integer from, Integer size) {
@@ -84,16 +89,29 @@ public class EventService {
         return EventMapper.INSTANCE.toEventFullDto(savedEvent);
     }
 
-    public ParticipationRequestDto getEventRequests(Integer userId, Integer eventId) {
-
+    public List<ParticipationRequestDto> getEventRequests(Integer userId, Integer eventId) {
+        List<ParticipationRequest> requests = requestRepository.findAllByRequester_IdAndEvent_Id(userId, eventId);
+        return RequestMapper.INSTANCE.toParticipationRequestDtos(requests);
     }
 
     public EventRequestStatusUpdateResult changeEventRequests(
             Integer userId,
             Integer eventId,
             EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
+        Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(NotFoundException::new);
+        if (event.getConfirmedRequests() == 0 || !event.getRequestModeration()) {
+            throw new BadRequestException("Подтверждение заявок не требуется");
+        }
+        if (requestRepository.existsAllByIdInAndStatus(eventRequestStatusUpdateRequest.getRequestIds(),
+                ParticipationRequest.Status.PENDING)) {
+            throw new BadRequestException("Request must have status PENDING");
+        }
+        if (event.getConfirmedRequests().equals(event.getParticipantLimit())) {
+            throw new ConflictException("The participant limit has been reached");
+        }
 
     }
+
 
     public List<EventFullDto> getEvents(
             List<Integer> users,
