@@ -35,3 +35,4 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: ewm-db
+    command: -p 5433

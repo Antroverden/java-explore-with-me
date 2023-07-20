@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class UpdateEventUserRequest {
     String annotation;
-    Long category;
+    Integer category;
     String description;
     String eventDate;
     LocationDto location;

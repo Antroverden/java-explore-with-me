@@ -1,8 +1,8 @@
 package ru.practicum.mainservice.mapper;
 
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.practicum.mainservice.entity.Category;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.exception.NotFoundException;
@@ -15,15 +15,11 @@ import ru.practicum.mainservice.storage.CategoryRepository;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = CategoryRepository.class)
 public abstract class EventMapper {
 
     public static EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
     private CategoryRepository categoryRepository;
-
-    public void setCategoryRepository(@Context CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
 
     public abstract Event toEvent(NewEventDto dto);
 

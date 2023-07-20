@@ -3,9 +3,9 @@ package ru.practicum.mainservice.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.practicum.mainservice.client.StatsClient;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.entity.Event.State;
 import ru.practicum.mainservice.entity.ParticipationRequest;
@@ -27,6 +27,7 @@ import ru.practicum.mainservice.model.response.ParticipationRequestDto;
 import ru.practicum.mainservice.storage.EventRepository;
 import ru.practicum.mainservice.storage.RequestRepository;
 import ru.practicum.mainservice.storage.UserRepository;
+import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.dto.EndpointHitDto;
 
 import java.time.LocalDateTime;
@@ -45,7 +46,7 @@ public class EventService {
 
     EventRepository eventRepository;
     UserRepository userRepository;
-    StatsClient statsClient;
+//    StatsClient statsClient;
     RequestRepository requestRepository;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -171,7 +172,7 @@ public class EventService {
         }
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/")
                 .timestamp(LocalDateTime.now().toString()).ip(ip).build();
-        statsClient.addHit(endpointHitDto);
+//        statsClient.addHit(endpointHitDto);
         return EventMapper.INSTANCE.toEventDtos(events);
     }
 
@@ -179,7 +180,7 @@ public class EventService {
         Event event = eventRepository.findByIdAndState(eventId, PUBLISHED).orElseThrow(NotFoundException::new);
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/" + eventId)
                 .timestamp(LocalDateTime.now().toString()).ip(ip).build();
-        statsClient.addHit(endpointHitDto);
+//        statsClient.addHit(endpointHitDto);
         return EventMapper.INSTANCE.toEventFullDto(event);
     }
 }
