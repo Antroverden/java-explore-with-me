@@ -98,6 +98,11 @@
 							<version>1.5.5.Final</version>
 						</path>
 					</annotationProcessorPaths>
+					<compilerArgs>
+						<compilerArg>
+							-Amapstruct.unmappedTargetPolicy=IGNORE
+						</compilerArg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>

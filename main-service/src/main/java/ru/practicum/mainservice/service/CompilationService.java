@@ -44,9 +44,8 @@ public class CompilationService {
     }
 
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
-        List<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
+
         Compilation compilation = CompilationMapper.INSTANCE.toCompilation(newCompilationDto);
-        compilation.setEvents(events);
         compilationRepository.save(compilation);
         return CompilationMapper.INSTANCE.toCompilationDto(compilation);
     }

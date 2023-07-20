@@ -14,7 +14,7 @@ import ru.practicum.mainservice.service.CompilationService;
 @RequiredArgsConstructor
 @RequestMapping("/admin/compilations")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CompilationController {
+public class AdminCompilationController {
 
     CompilationService compilationService;
 

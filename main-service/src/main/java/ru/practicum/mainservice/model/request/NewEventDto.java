@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 public class NewEventDto {
     String annotation;
     @NotBlank
-    Long category;
+    Integer category;
     String description;
     String eventDate;
     LocationDto location;

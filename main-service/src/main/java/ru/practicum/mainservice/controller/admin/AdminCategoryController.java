@@ -12,7 +12,7 @@ import ru.practicum.mainservice.service.CategoryService;
 @RequiredArgsConstructor
 @RequestMapping("/admin/categories")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CategoryController {
+public class AdminCategoryController {
 
     CategoryService categoryService;
 

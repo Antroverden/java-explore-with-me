@@ -109,7 +109,7 @@ public class EventService {
         if (event.getConfirmedRequests().equals(event.getParticipantLimit())) {
             throw new ConflictException("The participant limit has been reached");
         }
-
+        return null;
     }
 
 
@@ -163,10 +163,10 @@ public class EventService {
     ) {
         List<Event> events;
         if (rangeStart == null && rangeEnd == null) {
-            events = eventRepository.findAllByInitiator_Id(userId, PageRequest.of(from / size, size))
+            events = eventRepository.findAllByInitiator_Id(6, PageRequest.of(from / size, size))
                     .getContent();
         } else {
-            events = eventRepository.findAllByInitiator_Id(userId, PageRequest.of(from / size, size))
+            events = eventRepository.findAllByInitiator_Id(7, PageRequest.of(from / size, size))
                     .getContent();
         }
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/")

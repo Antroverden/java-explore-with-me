@@ -16,7 +16,7 @@ import static ru.practicum.mainservice.entity.Event.State;
 @RequiredArgsConstructor
 @RequestMapping("/admin/events")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class EventController {
+public class AdminEventController {
 
     EventService eventService;
 
