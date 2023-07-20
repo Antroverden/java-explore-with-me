@@ -44,6 +44,7 @@ public class CategoryService {
     public CategoryDto changeCategory(Integer catId, CategoryDto categoryDto) {
         if (!categoryRepository.existsById(catId)) throw new NotFoundException("Категория не найдена");
         Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
+        category.setId(catId);
         try {
             Category savedCategory = categoryRepository.save(category);
             return CategoryMapper.INSTANCE.toCategoryDto(savedCategory);

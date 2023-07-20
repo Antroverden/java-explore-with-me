@@ -24,7 +24,7 @@ public class Event {
     @JoinColumn(name = "category_id")
     Category category;
     Integer confirmedRequests;
-    String createdOn;
+    LocalDateTime createdOn;
     String description;
     LocalDateTime eventDate;
     @ManyToOne
@@ -36,6 +36,7 @@ public class Event {
     Integer participantLimit;
     String publishedOn;
     Boolean requestModeration;
+    @Enumerated(EnumType.STRING)
     State state;
     String title;
 

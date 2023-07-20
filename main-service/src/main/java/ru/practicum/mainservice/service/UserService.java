@@ -38,7 +38,7 @@ public class UserService {
             User savedUser = userRepository.save(user);
             return UserMapper.INSTANCE.toUserDto(savedUser);
         } catch (DataAccessException e) {
-            throw new ConflictException("Название категории " + user.getName() + " уже существует");
+            throw new ConflictException("Юзер с имением " + user.getName() + " уже существует");
         }
     }
 

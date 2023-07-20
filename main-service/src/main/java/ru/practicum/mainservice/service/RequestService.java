@@ -28,11 +28,12 @@ public class RequestService {
     RequestRepository requestRepository;
     UserRepository userRepository;
     EventRepository eventRepository;
+    RequestMapper requestMapper;
 
     public List<ParticipationRequestDto> getRequests(Integer userId) {
         if (!userRepository.existsById(userId)) throw new NotFoundException("Пользователь не найден");
         List<ParticipationRequest> requests = requestRepository.findAllByRequester_Id(userId);
-        return RequestMapper.INSTANCE.toParticipationRequestDtos(requests);
+        return requestMapper.toParticipationRequestDtos(requests);
     }
 
     public ParticipationRequestDto addRequest(Integer userId, Integer eventId) {
@@ -49,7 +50,7 @@ public class RequestService {
                 .requester(requester).event(event).status(ParticipationRequest.Status.PENDING).build();
         if (!event.getRequestModeration()) participationRequest.setStatus(ParticipationRequest.Status.APPROVED);
         ParticipationRequest saved = requestRepository.save(participationRequest);
-        return RequestMapper.INSTANCE.toParticipationRequestDto(saved);
+        return requestMapper.toParticipationRequestDto(saved);
     }
 
     //        || (event.getConfirmedRequests() > 0 && event.getConfirmedRequests().equals(event.getParticipantLimit())
@@ -61,6 +62,6 @@ public class RequestService {
         }
         participationRequest.setStatus(ParticipationRequest.Status.CANCELED);
         requestRepository.save(participationRequest);
-        return RequestMapper.INSTANCE.toParticipationRequestDto(participationRequest);
+        return requestMapper.toParticipationRequestDto(participationRequest);
     }
 }

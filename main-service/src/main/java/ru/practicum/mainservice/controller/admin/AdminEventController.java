@@ -8,6 +8,7 @@ import ru.practicum.mainservice.model.request.UpdateEventAdminRequest;
 import ru.practicum.mainservice.model.response.EventFullDto;
 import ru.practicum.mainservice.service.EventService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static ru.practicum.mainservice.entity.Event.State;
@@ -22,11 +23,11 @@ public class AdminEventController {
 
     @GetMapping
     public List<EventFullDto> getEvents(
-            @RequestParam List<Integer> users,
-            @RequestParam List<State> states,
-            @RequestParam List<Integer> categories,
-            @RequestParam String rangeStart,
-            @RequestParam String rangeEnd,
+            @RequestParam(required = false) List<Integer> users,
+            @RequestParam(required = false) List<State> states,
+            @RequestParam(required = false) List<Integer> categories,
+            @RequestParam(required = false) String rangeStart,
+            @RequestParam(required = false) String rangeEnd,
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
@@ -36,7 +37,7 @@ public class AdminEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto changeEvent(
             @PathVariable Integer eventId,
-            @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+            @Valid @RequestBody(required = false) UpdateEventAdminRequest updateEventAdminRequest) {
         return eventService.changeEvent(eventId, updateEventAdminRequest);
     }
 }

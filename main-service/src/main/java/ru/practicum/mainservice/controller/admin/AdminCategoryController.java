@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.response.CategoryDto;
 import ru.practicum.mainservice.service.CategoryService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/categories")
@@ -18,11 +20,11 @@ public class AdminCategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto addCategory(@RequestBody CategoryDto categoryDto) {
+    public CategoryDto addCategory(@Valid @RequestBody CategoryDto categoryDto) {
         return categoryService.addCategory(categoryDto);
     }
 
-    @GetMapping("/{catId}")
+    @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public String deleteCategory(@PathVariable Integer catId) {
         categoryService.deleteCategory(catId);
@@ -30,7 +32,7 @@ public class AdminCategoryController {
     }
 
     @PatchMapping("/{catId}")
-    public CategoryDto changeCategory(@PathVariable Integer catId, @RequestBody CategoryDto categoryDto) {
+    public CategoryDto changeCategory(@PathVariable Integer catId, @Valid @RequestBody CategoryDto categoryDto) {
         return categoryService.changeCategory(catId, categoryDto);
     }
 }

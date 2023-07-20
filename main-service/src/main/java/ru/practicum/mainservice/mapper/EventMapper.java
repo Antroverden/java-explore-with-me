@@ -1,8 +1,8 @@
 package ru.practicum.mainservice.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.practicum.mainservice.entity.Category;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.exception.NotFoundException;
@@ -15,21 +15,37 @@ import ru.practicum.mainservice.storage.CategoryRepository;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = CategoryRepository.class)
+@Mapper(componentModel = "spring")
+@Component
 public abstract class EventMapper {
 
-    public static EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
     private CategoryRepository categoryRepository;
 
-    public abstract Event toEvent(NewEventDto dto);
+    @Autowired
+    public void setEventRepository(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     Category map(Integer value) {
         return categoryRepository.findById(value).orElseThrow(NotFoundException::new);
     }
 
-    public abstract Event toEvent(UpdateEventUserRequest updateEventUserRequest);
+    @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    public abstract Event toEvent(NewEventDto dto);
 
-    public abstract Event toEvent(UpdateEventAdminRequest updateEventAdminRequest);
+    @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    public abstract Event toEvent(UpdateEventUserRequest dto);
+
+    @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    public abstract Event toEvent(UpdateEventAdminRequest dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    public abstract void updateEvent(@MappingTarget Event entity, UpdateEventAdminRequest dto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    public abstract void updateEvent(@MappingTarget Event entity, UpdateEventUserRequest dto);
 
     public abstract EventFullDto toEventFullDto(Event event);
 

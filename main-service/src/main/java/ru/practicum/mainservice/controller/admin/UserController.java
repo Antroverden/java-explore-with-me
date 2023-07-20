@@ -9,6 +9,7 @@ import ru.practicum.mainservice.model.request.NewUserRequest;
 import ru.practicum.mainservice.model.response.UserDto;
 import ru.practicum.mainservice.service.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getUsers(
-            @RequestParam List<Integer> ids,
+            @RequestParam(required = false) List<Integer> ids,
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size) {
         return userService.getUsers(ids, from, size);
@@ -29,7 +30,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUser(@RequestBody NewUserRequest newUserRequest) {
+    public UserDto addUser(@Valid @RequestBody NewUserRequest newUserRequest) {
         return userService.createUser(newUserRequest);
     }
 

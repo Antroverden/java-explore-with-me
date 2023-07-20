@@ -24,30 +24,29 @@ public class CompilationService {
 
     CompilationRepository compilationRepository;
     EventRepository eventRepository;
-
+    CompilationMapper compilationMapper;
 
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         List<Compilation> compilations;
-        if (!pinned) {
+        if (pinned == null) {
             compilations = compilationRepository.findAll(PageRequest.of(from / size, size))
                     .getContent();
         } else {
             compilations = compilationRepository
                     .findCompilationsByPinnedTrue(PageRequest.of(from / size, size)).getContent();
         }
-        return CompilationMapper.INSTANCE.toCompilationDtos(compilations);
+        return compilationMapper.toCompilationDtos(compilations);
     }
 
     public CompilationDto getCompilation(Integer compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(NotFoundException::new);
-        return CompilationMapper.INSTANCE.toCompilationDto(compilation);
+        return compilationMapper.toCompilationDto(compilation);
     }
 
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
-
-        Compilation compilation = CompilationMapper.INSTANCE.toCompilation(newCompilationDto);
+        Compilation compilation = compilationMapper.toCompilation(newCompilationDto);
         compilationRepository.save(compilation);
-        return CompilationMapper.INSTANCE.toCompilationDto(compilation);
+        return compilationMapper.toCompilationDto(compilation);
     }
 
     public void deleteCompilation(Integer compId) {
@@ -67,6 +66,6 @@ public class CompilationService {
             List<Event> eventsFromDb = eventRepository.findAllByIdIn(events);
             compilation.setEvents(eventsFromDb);
         }
-        return CompilationMapper.INSTANCE.toCompilationDto(compilation);
+        return compilationMapper.toCompilationDto(compilation);
     }
 }

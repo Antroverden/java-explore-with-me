@@ -10,6 +10,8 @@ import ru.practicum.mainservice.model.request.UpdateCompilationRequest;
 import ru.practicum.mainservice.model.response.CompilationDto;
 import ru.practicum.mainservice.service.CompilationService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/compilations")
@@ -19,12 +21,13 @@ public class AdminCompilationController {
     CompilationService compilationService;
 
     @PostMapping
-    public CompilationDto addCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public CompilationDto addCompilation(@Valid @RequestBody NewCompilationDto newCompilationDto) {
         return compilationService.addCompilation(newCompilationDto);
     }
 
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @DeleteMapping("/{compId}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public String deleteCompilation(@PathVariable Integer compId) {
         compilationService.deleteCompilation(compId);
         return "Подборка удалена";
@@ -33,7 +36,7 @@ public class AdminCompilationController {
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(
             @PathVariable Integer compId,
-            @RequestBody UpdateCompilationRequest updateCompilationRequest) {
+            @Valid @RequestBody UpdateCompilationRequest updateCompilationRequest) {
         return compilationService.updateCompilation(compId, updateCompilationRequest);
     }
 }

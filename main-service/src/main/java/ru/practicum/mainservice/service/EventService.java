@@ -3,7 +3,6 @@ package ru.practicum.mainservice.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.entity.Event;
@@ -27,15 +26,13 @@ import ru.practicum.mainservice.model.response.ParticipationRequestDto;
 import ru.practicum.mainservice.storage.EventRepository;
 import ru.practicum.mainservice.storage.RequestRepository;
 import ru.practicum.mainservice.storage.UserRepository;
-import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.dto.EndpointHitDto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static ru.practicum.mainservice.entity.Event.State.CANCELED;
-import static ru.practicum.mainservice.entity.Event.State.PUBLISHED;
+import static ru.practicum.mainservice.entity.Event.State.*;
 import static ru.practicum.mainservice.model.request.UpdateEventAdminRequest.StateAction.PUBLISH_EVENT;
 import static ru.practicum.mainservice.model.request.UpdateEventAdminRequest.StateAction.REJECT_EVENT;
 
@@ -46,14 +43,16 @@ public class EventService {
 
     EventRepository eventRepository;
     UserRepository userRepository;
-//    StatsClient statsClient;
+    //    StatsClient statsClient;
     RequestRepository requestRepository;
+    EventMapper eventMapper;
+    RequestMapper requestMapper;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public List<EventShortDto> getEvents(Integer userId, Integer from, Integer size) {
         List<Event> events = eventRepository.findAllByInitiator_Id(userId, PageRequest.of(from / size, size))
                 .getContent();
-        return EventMapper.INSTANCE.toEventDtos(events);
+        return eventMapper.toEventDtos(events);
     }
 
     public EventFullDto addEvent(Integer userId, NewEventDto newEventDto) {
@@ -61,38 +60,45 @@ public class EventService {
         if (LocalDateTime.now().plusHours(2).isAfter(eventDateTime)) {
             throw new ForbiddenException("Неправильно указана дата");
         }
-        Event toSave = EventMapper.INSTANCE.toEvent(newEventDto);
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
+        Event toSave = eventMapper.toEvent(newEventDto);
         toSave.setInitiator(user);
+        toSave.setCreatedOn(LocalDateTime.now());
+        toSave.setState(PUBLISHED);
+        if (newEventDto.getPaid() == null) toSave.setPaid(false);
+        if (newEventDto.getParticipantLimit() == null) toSave.setParticipantLimit(0);
+        if (newEventDto.getRequestModeration() == null) toSave.setRequestModeration(true);
         Event savedEvent = eventRepository.save(toSave);
-        return EventMapper.INSTANCE.toEventFullDto(savedEvent);
+        return eventMapper.toEventFullDto(savedEvent);
     }
 
     public EventFullDto getEvent(Integer userId, Integer eventId) {
         Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(NotFoundException::new);
-        return EventMapper.INSTANCE.toEventFullDto(event);
+        return eventMapper.toEventFullDto(event);
     }
 
     public EventFullDto changeEvent(Integer userId, Integer eventId, UpdateEventUserRequest updateEventUserRequest) {
-        LocalDateTime eventDateTime = LocalDateTime.parse(updateEventUserRequest.getEventDate(), formatter);
-        if (LocalDateTime.now().plusHours(2).isAfter(eventDateTime)) {
-            throw new ForbiddenException("Неправильно указана дата");
+        if (updateEventUserRequest.getEventDate() != null) {
+            LocalDateTime eventDateTime = LocalDateTime.parse(updateEventUserRequest.getEventDate(), formatter);
+            if (LocalDateTime.now().plusHours(2).isAfter(eventDateTime)) {
+                throw new ForbiddenException("Неправильно указана дата");
+            }
         }
         Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
-        if (event.getState() == PUBLISHED) {
+        if (event.getState() == PENDING) {
             throw new ConflictException("Only pending or canceled events can be changed");
         }
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ForbiddenException("Данный пользователь не создавал событие");
         }
-        Event toSave = EventMapper.INSTANCE.toEvent(updateEventUserRequest);
-        Event savedEvent = eventRepository.save(toSave);
-        return EventMapper.INSTANCE.toEventFullDto(savedEvent);
+        eventMapper.updateEvent(event, updateEventUserRequest);
+        Event savedEvent = eventRepository.save(event);
+        return eventMapper.toEventFullDto(savedEvent);
     }
 
     public List<ParticipationRequestDto> getEventRequests(Integer userId, Integer eventId) {
         List<ParticipationRequest> requests = requestRepository.findAllByRequester_IdAndEvent_Id(userId, eventId);
-        return RequestMapper.INSTANCE.toParticipationRequestDtos(requests);
+        return requestMapper.toParticipationRequestDtos(requests);
     }
 
     public EventRequestStatusUpdateResult changeEventRequests(
@@ -123,31 +129,44 @@ public class EventService {
             Integer from,
             Integer size
     ) {
-        LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
-        LocalDateTime end = LocalDateTime.parse(rangeEnd, formatter);
+        LocalDateTime start;
+        if (rangeStart == null) start = LocalDateTime.now();
+        else start = LocalDateTime.parse(rangeStart, formatter);
+        LocalDateTime end;
+        if (rangeEnd == null) end = start.plusYears(10);
+        else end = LocalDateTime.parse(rangeEnd, formatter);
         List<Event> events = eventRepository
                 .findAllByInitiator_IdInAndStateInAndCategory_IdInAndEventDateBeforeAndEventDateAfter(
                         users, states, categories, start, end, PageRequest.of(from / size, size))
                 .getContent();
-        return EventMapper.INSTANCE.toEventFullDtos(events);
+        return eventMapper.toEventFullDtos(events);
     }
 
     public EventFullDto changeEvent(Integer eventId, UpdateEventAdminRequest updateEventAdminRequest) {
-        LocalDateTime eventDateTime = LocalDateTime.parse(updateEventAdminRequest.getEventDate(), formatter);
-        if (LocalDateTime.now().plusHours(1).isAfter(eventDateTime)) {
-            throw new ForbiddenException("Неправильно указана дата");
+        if (updateEventAdminRequest != null) {
+            if (updateEventAdminRequest.getEventDate() != null) {
+                LocalDateTime eventDateTime = LocalDateTime.parse(updateEventAdminRequest.getEventDate(), formatter);
+                if (LocalDateTime.now().plusHours(1).isAfter(eventDateTime)) {
+                    throw new ForbiddenException("Неправильно указана дата");
+                }
+            }
+            Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
+            if (updateEventAdminRequest.getStateAction() == PUBLISH_EVENT
+                    && (event.getState() == PUBLISHED || event.getState() == CANCELED)) {
+                throw new ConflictException("Cannot publish published or canceled event");
+            }
+            if (updateEventAdminRequest.getStateAction() == REJECT_EVENT && event.getState() == PUBLISHED) {
+                throw new ConflictException("Cannot reject published event");
+            }
+            eventMapper.updateEvent(event, updateEventAdminRequest);
+            if (updateEventAdminRequest.getStateAction() == PUBLISH_EVENT) event.setState(PUBLISHED);
+            if (updateEventAdminRequest.getStateAction() == REJECT_EVENT) event.setState(CANCELED);
+            Event savedEvent = eventRepository.save(event);
+            return eventMapper.toEventFullDto(savedEvent);
         }
         Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
-        if (updateEventAdminRequest.getStateAction() == PUBLISH_EVENT
-                && (event.getState() == PUBLISHED || event.getState() == CANCELED)) {
-            throw new ConflictException("Cannot publish published or canceled event");
-        }
-        if (updateEventAdminRequest.getStateAction() == REJECT_EVENT && event.getState() == PUBLISHED) {
-            throw new ConflictException("Cannot reject published event");
-        }
-        Event toSave = EventMapper.INSTANCE.toEvent(updateEventAdminRequest);
-        Event savedEvent = eventRepository.save(toSave);
-        return EventMapper.INSTANCE.toEventFullDto(savedEvent);
+        if (event.getState() == PUBLISHED) throw new ConflictException("Cannot publish published or canceled event");
+        return eventMapper.toEventFullDto(event);
     }
 
     public List<EventShortDto> getEvents(
@@ -173,7 +192,7 @@ public class EventService {
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/")
                 .timestamp(LocalDateTime.now().toString()).ip(ip).build();
 //        statsClient.addHit(endpointHitDto);
-        return EventMapper.INSTANCE.toEventDtos(events);
+        return eventMapper.toEventDtos(events);
     }
 
     public EventFullDto getEvent(Integer eventId, String ip) {
@@ -181,6 +200,6 @@ public class EventService {
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/" + eventId)
                 .timestamp(LocalDateTime.now().toString()).ip(ip).build();
 //        statsClient.addHit(endpointHitDto);
-        return EventMapper.INSTANCE.toEventFullDto(event);
+        return eventMapper.toEventFullDto(event);
     }
 }

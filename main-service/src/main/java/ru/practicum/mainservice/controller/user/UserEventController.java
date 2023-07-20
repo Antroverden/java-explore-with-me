@@ -11,6 +11,7 @@ import ru.practicum.mainservice.model.request.UpdateEventUserRequest;
 import ru.practicum.mainservice.model.response.*;
 import ru.practicum.mainservice.service.EventService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,15 +25,15 @@ public class UserEventController {
     @GetMapping
     public List<EventShortDto> getEvents(
             @PathVariable Integer userId,
-            @RequestParam Integer from,
-            @RequestParam Integer size
+            @RequestParam(required = false, defaultValue = "0") Integer from,
+            @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
         return eventService.getEvents(userId, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto addEvent(@PathVariable Integer userId, @RequestBody NewEventDto newEventDto) {
+    public EventFullDto addEvent(@PathVariable Integer userId, @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.addEvent(userId, newEventDto);
     }
 
@@ -45,7 +46,7 @@ public class UserEventController {
     public EventFullDto changeEvent(
             @PathVariable Integer userId,
             @PathVariable Integer eventId,
-            @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
         return eventService.changeEvent(userId, eventId, updateEventUserRequest);
     }
 
