@@ -2,6 +2,7 @@ package ru.practicum.mainservice.model.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.mainservice.entity.ParticipationRequest.Status;
 
 import java.util.List;
 
@@ -14,8 +15,4 @@ public class EventRequestStatusUpdateRequest {
 
     List<Integer> requestIds;
     Status status;
-
-    public enum Status {
-        CONFIRMED, REJECTED
-    }
 }

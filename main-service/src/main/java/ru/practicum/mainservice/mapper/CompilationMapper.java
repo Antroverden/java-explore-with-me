@@ -1,11 +1,13 @@
 package ru.practicum.mainservice.mapper;
 
-import org.mapstruct.Mapper;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.mainservice.entity.Compilation;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.model.request.NewCompilationDto;
+import ru.practicum.mainservice.model.request.UpdateCompilationRequest;
+import ru.practicum.mainservice.model.request.UpdateEventAdminRequest;
 import ru.practicum.mainservice.model.response.CompilationDto;
 import ru.practicum.mainservice.storage.EventRepository;
 
@@ -31,4 +33,7 @@ public abstract class CompilationMapper {
     public abstract CompilationDto toCompilationDto(Compilation compilation);
 
     public abstract List<CompilationDto> toCompilationDtos(List<Compilation> categories);
+
+    @BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)
+    public abstract void updateCompilation(@MappingTarget Compilation compilation, UpdateCompilationRequest dto);
 }

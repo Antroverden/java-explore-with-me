@@ -15,7 +15,6 @@ import java.util.List;
 public class UpdateCompilationRequest {
     List<Integer> events;
     Boolean pinned;
-    @NotBlank
     @Size(max = 50)
     String title;
 

@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.mainservice.entity.Compilation;
-import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.exception.NotFoundException;
 import ru.practicum.mainservice.mapper.CompilationMapper;
 import ru.practicum.mainservice.model.request.NewCompilationDto;
@@ -57,15 +56,8 @@ public class CompilationService {
     public CompilationDto updateCompilation(Integer compId, UpdateCompilationRequest updateCompilationRequest) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException("Подборка не найдена"));
-        Boolean pinned = updateCompilationRequest.getPinned();
-        String title = updateCompilationRequest.getTitle();
-        List<Integer> events = updateCompilationRequest.getEvents();
-        if (pinned != null) compilation.setPinned(pinned);
-        if (title != null) compilation.setTitle(title);
-        if (events != null) {
-            List<Event> eventsFromDb = eventRepository.findAllByIdIn(events);
-            compilation.setEvents(eventsFromDb);
-        }
+        compilationMapper.updateCompilation(compilation, updateCompilationRequest);
+        compilationRepository.save(compilation);
         return compilationMapper.toCompilationDto(compilation);
     }
 }

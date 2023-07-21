@@ -34,7 +34,7 @@ import java.util.List;
 import static ru.practicum.mainservice.entity.Event.State.PENDING;
 import static ru.practicum.mainservice.entity.Event.State.PUBLISHED;
 import static ru.practicum.mainservice.entity.ParticipationRequest.Status.CONFIRMED;
-import static ru.practicum.mainservice.model.request.EventRequestStatusUpdateRequest.Status.REJECTED;
+import static ru.practicum.mainservice.entity.ParticipationRequest.Status.REJECTED;
 import static ru.practicum.mainservice.model.request.UpdateEventAdminRequest.StateAction.PUBLISH_EVENT;
 import static ru.practicum.mainservice.model.request.UpdateEventAdminRequest.StateAction.REJECT_EVENT;
 
@@ -128,7 +128,7 @@ public class EventService {
         List<ParticipationRequest> requests = requestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
         if (eventRequestStatusUpdateRequest.getStatus() == REJECTED) {
-            requests.forEach(r -> r.setStatus(ParticipationRequest.Status.REJECTED));
+            requests.forEach(r -> r.setStatus(REJECTED));
             eventRequestStatusUpdateResult.setRejectedRequests(requestMapper.toParticipationRequestDtos(requests));
             event.setConfirmedRequests(event.getConfirmedRequests()-requests.size());
         } else {
