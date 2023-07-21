@@ -30,5 +30,7 @@ public class UpdateEventAdminRequest {
     @Size(min = 3, max = 120)
     String title;
 
-    public enum StateAction {PUBLISH_EVENT, REJECT_EVENT}
+    public enum StateAction {
+        PUBLISH_EVENT, REJECT_EVENT
+    }
 }

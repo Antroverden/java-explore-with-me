@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -31,5 +30,7 @@ public class UpdateEventUserRequest {
     @Size(min = 3, max = 120)
     String title;
 
-    public enum StateAction {SEND_TO_REVIEW, CANCEL_REVIEW}
+    public enum StateAction {
+        SEND_TO_REVIEW, CANCEL_REVIEW
+    }
 }

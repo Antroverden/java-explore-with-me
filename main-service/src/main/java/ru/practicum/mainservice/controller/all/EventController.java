@@ -4,14 +4,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.response.EventFullDto;
 import ru.practicum.mainservice.model.response.EventShortDto;
 import ru.practicum.mainservice.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Future;
 import java.time.LocalDateTime;
 import java.util.List;
 

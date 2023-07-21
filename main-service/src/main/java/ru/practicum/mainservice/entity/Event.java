@@ -41,5 +41,7 @@ public class Event {
     String title;
     Long views;
 
-    public enum State {PENDING, PUBLISHED, CANCELED}
+    public enum State {
+        PENDING, PUBLISHED, CANCELED
+    }
 }

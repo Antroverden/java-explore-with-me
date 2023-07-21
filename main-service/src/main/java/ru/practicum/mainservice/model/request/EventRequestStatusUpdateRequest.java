@@ -14,5 +14,7 @@ public class EventRequestStatusUpdateRequest {
     List<Integer> requestIds;
     Status status;
 
-    public enum Status {CONFIRMED, REJECTED}
+    public enum Status {
+        CONFIRMED, REJECTED
+    }
 }

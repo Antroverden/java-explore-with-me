@@ -29,7 +29,6 @@ import ru.practicum.mainservice.storage.UserRepository;
 import ru.practicum.stats.dto.EndpointHitDto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static ru.practicum.mainservice.entity.Event.State.*;
@@ -47,7 +46,6 @@ public class EventService {
     RequestRepository requestRepository;
     EventMapper eventMapper;
     RequestMapper requestMapper;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public List<EventShortDto> getEvents(Integer userId, Integer from, Integer size) {
         List<Event> events = eventRepository.findAllByInitiator_Id(userId, PageRequest.of(from / size, size))

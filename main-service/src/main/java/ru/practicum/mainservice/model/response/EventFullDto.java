@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.model.request.LocationDto;
 
-import javax.validation.constraints.Future;
 import java.time.LocalDateTime;
 
 @Builder
