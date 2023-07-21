@@ -16,6 +16,7 @@ import ru.practicum.mainservice.storage.RequestRepository;
 import ru.practicum.mainservice.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static ru.practicum.mainservice.entity.Event.State.PENDING;
@@ -46,10 +47,11 @@ public class RequestService {
             throw new ConflictException("Нельзя участвовать в своем или неопубликованном событии");
         }
         User requester = userRepository.findById(userId).orElseThrow(NotFoundException::new);
-        ParticipationRequest participationRequest = ParticipationRequest.builder().created(LocalDateTime.now())
+        ParticipationRequest participationRequest = ParticipationRequest.builder().created(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS))
                 .requester(requester).event(event).status(ParticipationRequest.Status.PENDING).build();
         if (!event.getRequestModeration()) participationRequest.setStatus(ParticipationRequest.Status.APPROVED);
         ParticipationRequest saved = requestRepository.save(participationRequest);
+        ParticipationRequest saved1 = requestRepository.findById(saved.getId()).orElseThrow(NotFoundException::new);
         return requestMapper.toParticipationRequestDto(saved);
     }
 

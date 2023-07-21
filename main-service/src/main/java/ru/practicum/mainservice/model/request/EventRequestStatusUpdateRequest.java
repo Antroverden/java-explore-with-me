@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventRequestStatusUpdateRequest {
+
     List<Integer> requestIds;
     Status status;
 
