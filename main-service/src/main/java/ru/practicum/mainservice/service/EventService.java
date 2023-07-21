@@ -33,8 +33,7 @@ import java.util.List;
 
 import static ru.practicum.mainservice.entity.Event.State.PENDING;
 import static ru.practicum.mainservice.entity.Event.State.PUBLISHED;
-import static ru.practicum.mainservice.entity.ParticipationRequest.Status.APPROVED;
-import static ru.practicum.mainservice.entity.ParticipationRequest.Status.CANCELED;
+import static ru.practicum.mainservice.entity.ParticipationRequest.Status.CONFIRMED;
 import static ru.practicum.mainservice.model.request.EventRequestStatusUpdateRequest.Status.REJECTED;
 import static ru.practicum.mainservice.model.request.UpdateEventAdminRequest.StateAction.PUBLISH_EVENT;
 import static ru.practicum.mainservice.model.request.UpdateEventAdminRequest.StateAction.REJECT_EVENT;
@@ -117,10 +116,10 @@ public class EventService {
             Integer eventId,
             EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         Event event = eventRepository.findByIdAndInitiator_Id(eventId, userId).orElseThrow(NotFoundException::new);
-        if (event.getConfirmedRequests() != null && event.getConfirmedRequests() == 0 || !event.getRequestModeration()) {
+        if (event.getConfirmedRequests() != null && event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             throw new BadRequestException("Подтверждение заявок не требуется");
         }
-        if (requestRepository.existsParticipationRequestByIdInAndStatus(eventRequestStatusUpdateRequest.getRequestIds(), APPROVED)) {
+        if (requestRepository.existsParticipationRequestByIdInAndStatus(eventRequestStatusUpdateRequest.getRequestIds(), CONFIRMED)) {
             throw new ConflictException("Request must have status PENDING");
         }
         if (event.getConfirmedRequests() != null && event.getConfirmedRequests().equals(event.getParticipantLimit())) {
@@ -129,13 +128,14 @@ public class EventService {
         List<ParticipationRequest> requests = requestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
         if (eventRequestStatusUpdateRequest.getStatus() == REJECTED) {
-            requests.forEach(r -> r.setStatus(CANCELED));
+            requests.forEach(r -> r.setStatus(ParticipationRequest.Status.REJECTED));
             eventRequestStatusUpdateResult.setRejectedRequests(requestMapper.toParticipationRequestDtos(requests));
+            event.setConfirmedRequests(event.getConfirmedRequests()-requests.size());
         } else {
-            requests.forEach(r -> r.setStatus(APPROVED));
+            requests.forEach(r -> r.setStatus(CONFIRMED));
             eventRequestStatusUpdateResult.setConfirmedRequests(requestMapper.toParticipationRequestDtos(requests));
+            event.setConfirmedRequests(event.getConfirmedRequests()+requests.size());
         }
-        event.setConfirmedRequests(event.getConfirmedRequests()+requests.size());
         eventRepository.save(event);
         requestRepository.saveAll(requests);
         return eventRequestStatusUpdateResult;
