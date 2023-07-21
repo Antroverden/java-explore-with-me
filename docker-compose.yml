@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   stats-server:
-    build: stats
+    build: stats/server
     container_name: stats-server
     ports:
       - "9090:9090"
