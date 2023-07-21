@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
+    Integer id;
     String email;
-    Long id;
     String name;
 }

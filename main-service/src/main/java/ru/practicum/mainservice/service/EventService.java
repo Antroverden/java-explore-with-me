@@ -85,13 +85,17 @@ public class EventService {
             }
         }
         Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
-        if (event.getState() == PENDING) {
+        if (event.getState() == PENDING) {//TODO может быть published?
             throw new ConflictException("Only pending or canceled events can be changed");
         }
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ForbiddenException("Данный пользователь не создавал событие");
         }
         eventMapper.updateEvent(event, updateEventUserRequest);
+        if (updateEventUserRequest.getStateAction() == UpdateEventUserRequest.StateAction.SEND_TO_REVIEW)
+            event.setState(PENDING);
+        if (updateEventUserRequest.getStateAction() == UpdateEventUserRequest.StateAction.CANCEL_REVIEW)
+            event.setState(CANCELED);
         Event savedEvent = eventRepository.save(event);
         return eventMapper.toEventFullDto(savedEvent);
     }
@@ -119,25 +123,26 @@ public class EventService {
         return null;
     }
 
-
     public List<EventFullDto> getEvents(
             List<Integer> users,
             List<State> states,
             List<Integer> categories,
-            String rangeStart,
-            String rangeEnd,
+            LocalDateTime rangeStart,
+            LocalDateTime rangeEnd,
             Integer from,
             Integer size
     ) {
-        LocalDateTime start;
-        if (rangeStart == null) start = LocalDateTime.now();
-        else start = LocalDateTime.parse(rangeStart, formatter);
-        LocalDateTime end;
-        if (rangeEnd == null) end = start.plusYears(10);
-        else end = LocalDateTime.parse(rangeEnd, formatter);
-        List<Event> events = eventRepository
+        List<Event> events;
+        if (rangeStart == null && rangeEnd == null) {
+            rangeStart = LocalDateTime.now();
+            rangeEnd = rangeStart.plusYears(10);
+        }
+        if (rangeEnd.isBefore(rangeStart)) {
+            throw new BadRequestException("Дата окончания не может быть до даты начала");
+        }
+        events = eventRepository
                 .findAllByInitiator_IdInAndStateInAndCategory_IdInAndEventDateBeforeAndEventDateAfter(
-                        users, states, categories, start, end, PageRequest.of(from / size, size))
+                        users, states, categories, rangeStart, rangeEnd, PageRequest.of(from / size, size))
                 .getContent();
         return eventMapper.toEventFullDtos(events);
     }
@@ -155,9 +160,9 @@ public class EventService {
                     && (event.getState() == PUBLISHED || event.getState() == CANCELED)) {
                 throw new ConflictException("Cannot publish published or canceled event");
             }
-            if (updateEventAdminRequest.getStateAction() == REJECT_EVENT && event.getState() == PUBLISHED) {
-                throw new ConflictException("Cannot reject published event");
-            }
+//            if (updateEventAdminRequest.getStateAction() == REJECT_EVENT && event.getState() == PUBLISHED) {
+//                throw new ConflictException("Cannot reject published event");
+//            }
             eventMapper.updateEvent(event, updateEventAdminRequest);
             if (updateEventAdminRequest.getStateAction() == PUBLISH_EVENT) event.setState(PUBLISHED);
             if (updateEventAdminRequest.getStateAction() == REJECT_EVENT) event.setState(CANCELED);
@@ -173,8 +178,8 @@ public class EventService {
             String text,
             Integer[] categories,
             Boolean paid,
-            String rangeStart,
-            String rangeEnd,
+            LocalDateTime rangeStart,
+            LocalDateTime rangeEnd,
             Boolean onlyAvailable,
             String sort,
             Integer from,
@@ -186,6 +191,9 @@ public class EventService {
             events = eventRepository.findAllByInitiator_Id(6, PageRequest.of(from / size, size))
                     .getContent();
         } else {
+            if (rangeEnd.isBefore(rangeStart)) {
+                throw new BadRequestException("Дата окончания не может быть до даты начала");
+            }
             events = eventRepository.findAllByInitiator_Id(7, PageRequest.of(from / size, size))
                     .getContent();
         }
@@ -196,10 +204,14 @@ public class EventService {
     }
 
     public EventFullDto getEvent(Integer eventId, String ip) {
-        Event event = eventRepository.findByIdAndState(eventId, PUBLISHED).orElseThrow(NotFoundException::new);
+        Event event = eventRepository.findByIdAndStateIn(eventId, List.of(PENDING, CANCELED)).orElseThrow(NotFoundException::new);
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/" + eventId)
                 .timestamp(LocalDateTime.now().toString()).ip(ip).build();
+        if (event.getViews() == null) event.setViews(1L);
+        else event.setViews(event.getViews() + 1);
 //        statsClient.addHit(endpointHitDto);
+//        if (event.getState() == PENDING || event.getState() == CANCELED)
+//            throw new NotFoundException("Событие не найдено");
         return eventMapper.toEventFullDto(event);
     }
 }

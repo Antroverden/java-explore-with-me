@@ -3,12 +3,15 @@ package ru.practicum.mainservice.controller.admin;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.request.UpdateEventAdminRequest;
 import ru.practicum.mainservice.model.response.EventFullDto;
 import ru.practicum.mainservice.service.EventService;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.practicum.mainservice.entity.Event.State;
@@ -17,6 +20,7 @@ import static ru.practicum.mainservice.entity.Event.State;
 @RequiredArgsConstructor
 @RequestMapping("/admin/events")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Validated
 public class AdminEventController {
 
     EventService eventService;
@@ -26,8 +30,8 @@ public class AdminEventController {
             @RequestParam(required = false) List<Integer> users,
             @RequestParam(required = false) List<State> states,
             @RequestParam(required = false) List<Integer> categories,
-            @RequestParam(required = false) String rangeStart,
-            @RequestParam(required = false) String rangeEnd,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {

@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.mainservice.model.request.EventRequestStatusUpdateRequest;
 import ru.practicum.mainservice.model.request.NewEventDto;
 import ru.practicum.mainservice.model.request.UpdateEventUserRequest;
-import ru.practicum.mainservice.model.response.*;
+import ru.practicum.mainservice.model.response.EventFullDto;
+import ru.practicum.mainservice.model.response.EventRequestStatusUpdateResult;
+import ru.practicum.mainservice.model.response.EventShortDto;
+import ru.practicum.mainservice.model.response.ParticipationRequestDto;
 import ru.practicum.mainservice.service.EventService;
 
 import javax.validation.Valid;
@@ -46,7 +49,7 @@ public class UserEventController {
     public EventFullDto changeEvent(
             @PathVariable Integer userId,
             @PathVariable Integer eventId,
-            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+            @RequestBody UpdateEventUserRequest updateEventUserRequest) {
         return eventService.changeEvent(userId, eventId, updateEventUserRequest);
     }
 

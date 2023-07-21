@@ -24,5 +24,5 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     Optional<Event> findByIdAndInitiator_Id(Integer eventId, Integer userId);
 
-    Optional<Event> findByIdAndState(Integer eventId, State state);
+    Optional<Event> findByIdAndStateIn(Integer eventId, List<State> states);
 }

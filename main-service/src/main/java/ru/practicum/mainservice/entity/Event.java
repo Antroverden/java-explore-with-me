@@ -39,6 +39,7 @@ public class Event {
     @Enumerated(EnumType.STRING)
     State state;
     String title;
+    Long views;
 
     public enum State {PENDING, PUBLISHED, CANCELED}
 }
