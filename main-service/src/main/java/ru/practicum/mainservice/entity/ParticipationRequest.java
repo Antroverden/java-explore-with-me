@@ -27,5 +27,7 @@ public class ParticipationRequest {
     @Enumerated(EnumType.STRING)
     Status status;
 
-    public enum Status {PENDING, APPROVED, CANCELED}
+    public enum Status {
+        PENDING, APPROVED, CANCELED
+    }
 }

@@ -81,7 +81,7 @@ public class EventService {
             }
         }
         Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
-        if (event.getState() == PENDING) {//TODO может быть published?
+        if (event.getState() == PENDING) {
             throw new ConflictException("Only pending or canceled events can be changed");
         }
         if (!event.getInitiator().getId().equals(userId)) {
