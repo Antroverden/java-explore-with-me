@@ -49,7 +49,7 @@ public class UserEventController {
     public EventFullDto changeEvent(
             @PathVariable Integer userId,
             @PathVariable Integer eventId,
-            @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+            @Valid @RequestBody UpdateEventUserRequest updateEventUserRequest) {
         return eventService.changeEvent(userId, eventId, updateEventUserRequest);
     }
 

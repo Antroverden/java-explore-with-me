@@ -56,8 +56,7 @@ public class EventService {
     }
 
     public EventFullDto addEvent(Integer userId, NewEventDto newEventDto) {
-        LocalDateTime eventDateTime = LocalDateTime.parse(newEventDto.getEventDate(), formatter);
-        if (LocalDateTime.now().plusHours(2).isAfter(eventDateTime)) {
+        if (LocalDateTime.now().plusHours(2).isAfter(newEventDto.getEventDate())) {
             throw new ForbiddenException("Неправильно указана дата");
         }
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
@@ -79,8 +78,7 @@ public class EventService {
 
     public EventFullDto changeEvent(Integer userId, Integer eventId, UpdateEventUserRequest updateEventUserRequest) {
         if (updateEventUserRequest.getEventDate() != null) {
-            LocalDateTime eventDateTime = LocalDateTime.parse(updateEventUserRequest.getEventDate(), formatter);
-            if (LocalDateTime.now().plusHours(2).isAfter(eventDateTime)) {
+            if (LocalDateTime.now().plusHours(2).isAfter(updateEventUserRequest.getEventDate())) {
                 throw new ForbiddenException("Неправильно указана дата");
             }
         }
@@ -150,8 +148,7 @@ public class EventService {
     public EventFullDto changeEvent(Integer eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         if (updateEventAdminRequest != null) {
             if (updateEventAdminRequest.getEventDate() != null) {
-                LocalDateTime eventDateTime = LocalDateTime.parse(updateEventAdminRequest.getEventDate(), formatter);
-                if (LocalDateTime.now().plusHours(1).isAfter(eventDateTime)) {
+                if (LocalDateTime.now().plusHours(1).isAfter(updateEventAdminRequest.getEventDate())) {
                     throw new ForbiddenException("Неправильно указана дата");
                 }
             }
@@ -160,9 +157,9 @@ public class EventService {
                     && (event.getState() == PUBLISHED || event.getState() == CANCELED)) {
                 throw new ConflictException("Cannot publish published or canceled event");
             }
-//            if (updateEventAdminRequest.getStateAction() == REJECT_EVENT && event.getState() == PUBLISHED) {
-//                throw new ConflictException("Cannot reject published event");
-//            }
+            if (updateEventAdminRequest.getStateAction() == REJECT_EVENT && event.getState() == PUBLISHED) {
+                throw new ConflictException("Cannot reject published event");
+            }
             eventMapper.updateEvent(event, updateEventAdminRequest);
             if (updateEventAdminRequest.getStateAction() == PUBLISH_EVENT) event.setState(PUBLISHED);
             if (updateEventAdminRequest.getStateAction() == REJECT_EVENT) event.setState(CANCELED);
