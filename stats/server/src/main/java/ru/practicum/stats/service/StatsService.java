@@ -3,7 +3,9 @@ package ru.practicum.stats.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.stats.dto.EndpointHitDto;
 import ru.practicum.stats.dto.ViewStatsDto;
 import ru.practicum.stats.mapper.EndpointHitMapper;
@@ -12,7 +14,6 @@ import ru.practicum.stats.model.EndpointHit;
 import ru.practicum.stats.storage.StatsRepository;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -27,23 +28,23 @@ public class StatsService {
         statsRepository.addEndpointHit(endpointHit);
     }
 
-    public List<ViewStatsDto> getStats(String start, String end, String[] uris, boolean unique) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime startDateTime = LocalDateTime.parse(start, formatter);
-        LocalDateTime endDateTime = LocalDateTime.parse(end, formatter);
+    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
+        if (end.isBefore(start)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Дата окончания не может быть до даты начала");
+        }
         if (unique) {
             if (uris == null) {
                 return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
-                        .findViewStatsUniqueAllUris(startDateTime, endDateTime));
+                        .findViewStatsUniqueAllUris(start, end));
             }
             return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
-                    .findViewStatsUnique(uris, startDateTime, endDateTime));
+                    .findViewStatsUnique(uris, start, end));
         }
         if (uris == null) {
             return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
-                    .findViewStatsNotUniqueAllUris(startDateTime, endDateTime));
+                    .findViewStatsNotUniqueAllUris(start, end));
         }
         return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
-                .findViewStatsNotUnique(uris, startDateTime, endDateTime));
+                .findViewStatsNotUnique(uris, start, end));
     }
 }

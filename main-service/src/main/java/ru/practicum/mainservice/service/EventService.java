@@ -26,9 +26,11 @@ import ru.practicum.mainservice.model.response.ParticipationRequestDto;
 import ru.practicum.mainservice.storage.EventRepository;
 import ru.practicum.mainservice.storage.RequestRepository;
 import ru.practicum.mainservice.storage.UserRepository;
+import ru.practicum.stats.client.StatsClient;
 import ru.practicum.stats.dto.EndpointHitDto;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static ru.practicum.mainservice.entity.Event.State.PENDING;
@@ -45,10 +47,10 @@ public class EventService {
 
     EventRepository eventRepository;
     UserRepository userRepository;
-    //    StatsClient statsClient;
     RequestRepository requestRepository;
     EventMapper eventMapper;
     RequestMapper requestMapper;
+    StatsClient statsClient = new StatsClient();
 
     public List<EventShortDto> getEvents(Integer userId, Integer from, Integer size) {
         List<Event> events = eventRepository.findAllByInitiator_Id(userId, PageRequest.of(from / size, size))
@@ -202,7 +204,6 @@ public class EventService {
             Boolean paid,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
-            Boolean onlyAvailable,
             String sort,
             Integer from,
             Integer size,
@@ -224,21 +225,19 @@ public class EventService {
             events = eventRepository.findAllByEventDateBeforeAndEventDateAfter(rangeEnd, rangeStart,
                     PageRequest.of(from / size, size)).getContent();
         }
-        EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/")
-                .timestamp(LocalDateTime.now().toString()).ip(ip).build();
-//        statsClient.addHit(endpointHitDto);
+        EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events")
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)).ip(ip).build();
+        statsClient.addHit(endpointHitDto);
         return eventMapper.toEventShortDtos(events);
     }
 
     public EventFullDto getEvent(Integer eventId, String ip) {
         Event event = eventRepository.findByIdAndStateIn(eventId, List.of(PUBLISHED)).orElseThrow(NotFoundException::new);
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/" + eventId)
-                .timestamp(LocalDateTime.now().toString()).ip(ip).build();
+                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)).ip(ip).build();
         if (event.getViews() == null) event.setViews(1L);
         else event.setViews(event.getViews() + 1);
-//        statsClient.addHit(endpointHitDto);
-//        if (event.getState() == PENDING || event.getState() == CANCELED)
-//            throw new NotFoundException("Событие не найдено");
+        statsClient.addHit(endpointHitDto);
         return eventMapper.toEventFullDto(event);
     }
 }
