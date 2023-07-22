@@ -24,6 +24,15 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     Page<Event> findAllByEventDateBeforeAndEventDateAfter(LocalDateTime start, LocalDateTime end, Pageable pageable);
 
+    Page<Event> findAllByAnnotationContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndCategory_IdInAndPaidIsAndEventDateBeforeAndEventDateAfter(
+            String text,
+            String text2,
+            List<Integer> categories,
+            Boolean paid,
+            LocalDateTime rangeStart,
+            LocalDateTime rangeEnd,
+            Pageable pageable);
+
     Optional<Event> findByIdAndInitiator_Id(Integer eventId, Integer userId);
 
     Optional<Event> findByIdAndStateIn(Integer eventId, List<State> states);

@@ -198,7 +198,7 @@ public class EventService {
 
     public List<EventShortDto> getEvents(
             String text,
-            Integer[] categories,
+            List<Integer> categories,
             Boolean paid,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
@@ -217,21 +217,13 @@ public class EventService {
             throw new BadRequestException("Дата окончания не может быть до даты начала");
         }
         if (text != null && paid != null && sort != null && categories != null) {
-            if (onlyAvailable) {
-                if (sort.equals("EVENT_DATE")) {
-
-                } else {
-
-                }
-            } else {
-
-            }
-
+            events = eventRepository.findAllByAnnotationContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndCategory_IdInAndPaidIsAndEventDateBeforeAndEventDateAfter(
+                            text, text, categories, paid, rangeEnd, rangeStart, PageRequest.of(from / size, size))
+                    .getContent();
         } else {
-
+            events = eventRepository.findAllByEventDateBeforeAndEventDateAfter(rangeEnd, rangeStart,
+                    PageRequest.of(from / size, size)).getContent();
         }
-        events = eventRepository.findAllByEventDateBeforeAndEventDateAfter(rangeEnd, rangeStart,
-                PageRequest.of(from / size, size)).getContent();
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events/")
                 .timestamp(LocalDateTime.now().toString()).ip(ip).build();
 //        statsClient.addHit(endpointHitDto);
