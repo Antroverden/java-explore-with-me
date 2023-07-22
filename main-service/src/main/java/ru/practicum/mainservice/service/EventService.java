@@ -204,6 +204,7 @@ public class EventService {
             Boolean paid,
             LocalDateTime rangeStart,
             LocalDateTime rangeEnd,
+            Boolean onlyAvailable,
             String sort,
             Integer from,
             Integer size,
