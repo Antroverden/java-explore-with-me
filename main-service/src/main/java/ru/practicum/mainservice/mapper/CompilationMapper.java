@@ -29,7 +29,8 @@ public abstract class CompilationMapper {
     public abstract Compilation toCompilation(NewCompilationDto dto);
 
     List<Event> map(List<Integer> values) {
-        return eventRepository.findAllByIdIn(values);
+        if (values != null) return eventRepository.findAllByIdIn(values);
+        return null;
     }
 
     public abstract CompilationDto toCompilationDto(Compilation compilation);

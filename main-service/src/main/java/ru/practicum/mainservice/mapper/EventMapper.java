@@ -52,4 +52,5 @@ public abstract class EventMapper {
     public abstract List<EventShortDto> toEventDtos(List<Event> events);
 
     public abstract List<EventFullDto> toEventFullDtos(List<Event> events);
+    public abstract List<EventShortDto> toEventShortDtos(List<Event> events);
 }
