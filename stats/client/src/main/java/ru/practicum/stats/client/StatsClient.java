@@ -10,6 +10,6 @@ public class StatsClient {
 
     public void addHit(EndpointHitDto endpointHitDto) {
         HttpEntity<EndpointHitDto> request = new HttpEntity<>(endpointHitDto);
-        restTemplate.postForObject("http://stats-server:9090/hit", request, EndpointHitDto.class);
+        restTemplate.postForObject("http://stats-server:9090/hit", request, String.class);
     }
 }
