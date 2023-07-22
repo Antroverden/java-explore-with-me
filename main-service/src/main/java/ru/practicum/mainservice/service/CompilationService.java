@@ -12,7 +12,6 @@ import ru.practicum.mainservice.model.request.NewCompilationDto;
 import ru.practicum.mainservice.model.request.UpdateCompilationRequest;
 import ru.practicum.mainservice.model.response.CompilationDto;
 import ru.practicum.mainservice.storage.CompilationRepository;
-import ru.practicum.mainservice.storage.EventRepository;
 
 import java.util.List;
 
@@ -22,7 +21,6 @@ import java.util.List;
 public class CompilationService {
 
     CompilationRepository compilationRepository;
-    EventRepository eventRepository;
     CompilationMapper compilationMapper;
 
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
