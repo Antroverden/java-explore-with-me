@@ -227,7 +227,7 @@ public class EventService {
                     PageRequest.of(from / size, size)).getContent();
         }
         EndpointHitDto endpointHitDto = EndpointHitDto.builder().app("ewm-main-service").uri("/events")
-                .timestamp(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)).ip(ip).build();
+                .timestamp(LocalDateTime.now()).ip(ip).build();
         statsClient.addHit(endpointHitDto);
         return eventMapper.toEventShortDtos(events);
     }
