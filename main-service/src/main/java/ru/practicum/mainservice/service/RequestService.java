@@ -44,11 +44,12 @@ public class RequestService {
             throw new ConflictException("Запрос уже существует");
         }
         Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
-        if (event.getConfirmedRequests() != null && event.getParticipantLimit() != 0 && event.getConfirmedRequests().equals(event.getParticipantLimit())) {
+        if (event.getConfirmedRequests() != null && event.getParticipantLimit() != 0
+                && event.getConfirmedRequests().equals(event.getParticipantLimit())) {
             throw new ConflictException("The participant limit has been reached");
         }
         if (event.getInitiator().getId().equals(userId) || event.getState() == PENDING
-                || event.getState() == CANCELED || event.getConfirmedRequests().equals(event.getParticipantLimit())) {
+                || event.getState() == CANCELED) {
             throw new ConflictException("Нельзя участвовать в своем или неопубликованном событии");
         }
         User requester = userRepository.findById(userId).orElseThrow(NotFoundException::new);
