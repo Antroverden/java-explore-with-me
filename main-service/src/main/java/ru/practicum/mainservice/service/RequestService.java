@@ -32,17 +32,12 @@ public class RequestService {
     UserRepository userRepository;
     EventRepository eventRepository;
     RequestMapper requestMapper;
+    EventService eventService;
 
     public List<ParticipationRequestDto> getRequests(Integer userId) {
         if (!userRepository.existsById(userId)) throw new NotFoundException("Пользователь не найден");
         List<ParticipationRequest> requests = requestRepository.findAllByRequester_Id(userId);
-        List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
-        for (int i = 0; i < requests.size(); i++) {
-            ParticipationRequest participationRequest = requests.get(i);
-            participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
-            participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
-        }
-        return participationRequestDtos;
+        return eventService.toParticipationRequestDtos(requests);
     }
 
     public ParticipationRequestDto addRequest(Integer userId, Integer eventId) {

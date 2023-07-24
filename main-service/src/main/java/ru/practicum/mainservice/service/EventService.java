@@ -123,13 +123,7 @@ public class EventService {
         } else {
             requests = requestRepository.findAllByRequester_IdAndEvent_Id(userId, eventId);
         }
-        List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
-        for (int i = 0; i < requests.size(); i++) {
-            ParticipationRequest participationRequest = requests.get(i);
-            participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
-            participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
-        }
-        return participationRequestDtos;
+        return toParticipationRequestDtos(requests);
     }
 
     public EventRequestStatusUpdateResult changeEventRequests(
@@ -149,29 +143,32 @@ public class EventService {
         List<ParticipationRequest> requests = requestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
         if (eventRequestStatusUpdateRequest.getStatus() == REJECTED) {
-            requests.forEach(r -> r.setStatus(REJECTED));
-            List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
-            for (int i = 0; i < requests.size(); i++) {
-                ParticipationRequest participationRequest = requests.get(i);
-                participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
-                participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
-            }
+            List<ParticipationRequestDto> participationRequestDtos = setRequestStatus(requests, REJECTED);
             eventRequestStatusUpdateResult.setRejectedRequests(participationRequestDtos);
             event.setConfirmedRequests(event.getConfirmedRequests() - requests.size());
         } else {
-            requests.forEach(r -> r.setStatus(CONFIRMED));
-            List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
-            for (int i = 0; i < requests.size(); i++) {
-                ParticipationRequest participationRequest = requests.get(i);
-                participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
-                participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
-            }
+            List<ParticipationRequestDto> participationRequestDtos = setRequestStatus(requests, CONFIRMED);
             eventRequestStatusUpdateResult.setConfirmedRequests(participationRequestDtos);
             event.setConfirmedRequests(event.getConfirmedRequests() + requests.size());
         }
         eventRepository.save(event);
         requestRepository.saveAll(requests);
         return eventRequestStatusUpdateResult;
+    }
+
+    private List<ParticipationRequestDto> setRequestStatus(List<ParticipationRequest> requests, ParticipationRequest.Status status) {
+        requests.forEach(r -> r.setStatus(status));
+        return toParticipationRequestDtos(requests);
+    }
+
+    public List<ParticipationRequestDto> toParticipationRequestDtos(List<ParticipationRequest> requests) {
+        List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
+        for (int i = 0; i < requests.size(); i++) {
+            ParticipationRequest participationRequest = requests.get(i);
+            participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
+            participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
+        }
+        return participationRequestDtos;
     }
 
     public List<EventFullDto> getEvents(
