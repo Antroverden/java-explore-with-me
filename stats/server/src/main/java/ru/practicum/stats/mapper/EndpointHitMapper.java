@@ -1,13 +1,13 @@
 package ru.practicum.stats.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 import ru.practicum.stats.dto.EndpointHitDto;
 import ru.practicum.stats.model.EndpointHit;
 
-@Mapper
+@Mapper(componentModel = "spring")
+@Component
 public interface EndpointHitMapper {
-    EndpointHitMapper INSTANCE = Mappers.getMapper(EndpointHitMapper.class);
 
     EndpointHit toEndpointHit(EndpointHitDto dto);
 }

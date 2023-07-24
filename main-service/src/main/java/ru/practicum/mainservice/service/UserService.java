@@ -22,21 +22,22 @@ import java.util.List;
 public class UserService {
 
     UserRepository userRepository;
+    UserMapper userMapper;
 
     public List<UserDto> getUsers(List<Integer> ids, Integer from, Integer size) {
         if (ids == null) {
             List<User> users = userRepository.findAll(PageRequest.of(from / size, size)).getContent();
-            return UserMapper.INSTANCE.toUserDtos(users);
+            return userMapper.toUserDtos(users);
         }
         List<User> users = userRepository.findAllByIdIn(ids, PageRequest.of(from / size, size)).getContent();
-        return UserMapper.INSTANCE.toUserDtos(users);
+        return userMapper.toUserDtos(users);
     }
 
     public UserDto createUser(NewUserRequest newUserRequest) {
-        User user = UserMapper.INSTANCE.toUser(newUserRequest);
+        User user = userMapper.toUser(newUserRequest);
         try {
             User savedUser = userRepository.save(user);
-            return UserMapper.INSTANCE.toUserDto(savedUser);
+            return userMapper.toUserDto(savedUser);
         } catch (DataAccessException e) {
             throw new ConflictException("Юзер с имением " + user.getName() + " уже существует");
         }

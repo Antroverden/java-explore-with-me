@@ -21,12 +21,13 @@ import java.util.List;
 public class CategoryService {
 
     CategoryRepository categoryRepository;
+    CategoryMapper categoryMapper;
 
     public CategoryDto addCategory(CategoryDto categoryDto) {
-        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
+        Category category = categoryMapper.toCategory(categoryDto);
         try {
             Category savedCategory = categoryRepository.save(category);
-            return CategoryMapper.INSTANCE.toCategoryDto(savedCategory);
+            return categoryMapper.toCategoryDto(savedCategory);
         } catch (DataAccessException e) {
             throw new ConflictException("Название категории " + category.getName() + " уже существует");
         }
@@ -43,11 +44,11 @@ public class CategoryService {
 
     public CategoryDto changeCategory(Integer catId, CategoryDto categoryDto) {
         if (!categoryRepository.existsById(catId)) throw new NotFoundException("Категория не найдена");
-        Category category = CategoryMapper.INSTANCE.toCategory(categoryDto);
+        Category category = categoryMapper.toCategory(categoryDto);
         category.setId(catId);
         try {
             Category savedCategory = categoryRepository.save(category);
-            return CategoryMapper.INSTANCE.toCategoryDto(savedCategory);
+            return categoryMapper.toCategoryDto(savedCategory);
         } catch (DataAccessException e) {
             throw new ConflictException("Название категории " + category.getName() + " уже существует");
         }
@@ -55,11 +56,11 @@ public class CategoryService {
 
     public List<CategoryDto> getCategories(Integer from, Integer size) {
         List<Category> categories = categoryRepository.findAll(PageRequest.of(from / size, size)).getContent();
-        return CategoryMapper.INSTANCE.toCategoryDtos(categories);
+        return categoryMapper.toCategoryDtos(categories);
     }
 
     public CategoryDto getCategory(Integer catId) {
         Category category = categoryRepository.findById(catId).orElseThrow(NotFoundException::new);
-        return CategoryMapper.INSTANCE.toCategoryDto(category);
+        return categoryMapper.toCategoryDto(category);
     }
 }

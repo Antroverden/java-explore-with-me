@@ -22,9 +22,11 @@ import java.util.List;
 public class StatsService {
 
     StatsRepository statsRepository;
+    EndpointHitMapper endpointHitMapper;
+    ViewStatsMapper viewStatsMapper;
 
     public void addEndpointHit(EndpointHitDto endpointHitDto) {
-        EndpointHit endpointHit = EndpointHitMapper.INSTANCE.toEndpointHit(endpointHitDto);
+        EndpointHit endpointHit = endpointHitMapper.toEndpointHit(endpointHitDto);
         statsRepository.addEndpointHit(endpointHit);
     }
 
@@ -34,17 +36,17 @@ public class StatsService {
         }
         if (unique) {
             if (uris == null) {
-                return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
+                return viewStatsMapper.toViewStatsDto(statsRepository
                         .findViewStatsUniqueAllUris(start, end));
             }
-            return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
+            return viewStatsMapper.toViewStatsDto(statsRepository
                     .findViewStatsUnique(uris, start, end));
         }
         if (uris == null) {
-            return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
+            return viewStatsMapper.toViewStatsDto(statsRepository
                     .findViewStatsNotUniqueAllUris(start, end));
         }
-        return ViewStatsMapper.INSTANCE.toViewStatsDto(statsRepository
+        return viewStatsMapper.toViewStatsDto(statsRepository
                 .findViewStatsNotUnique(uris, start, end));
     }
 }
