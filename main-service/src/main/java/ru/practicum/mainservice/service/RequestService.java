@@ -60,10 +60,11 @@ public class RequestService {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
         } else participationRequest.setStatus((ParticipationRequest.Status.PENDING));
         ParticipationRequest saved = requestRepository.save(participationRequest);
+
+
         return requestMapper.toParticipationRequestDto(saved);
     }
 
-    //
     public ParticipationRequestDto cancelRequest(Integer userId, Integer requestId) {
         ParticipationRequest participationRequest = requestRepository
                 .findById(requestId).orElseThrow(() -> new NotFoundException("Запрос не существует"));
