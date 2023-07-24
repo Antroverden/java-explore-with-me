@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.mainservice.entity.Category;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.entity.Event.State;
 import ru.practicum.mainservice.entity.ParticipationRequest;
@@ -23,6 +24,7 @@ import ru.practicum.mainservice.model.response.EventFullDto;
 import ru.practicum.mainservice.model.response.EventRequestStatusUpdateResult;
 import ru.practicum.mainservice.model.response.EventShortDto;
 import ru.practicum.mainservice.model.response.ParticipationRequestDto;
+import ru.practicum.mainservice.storage.CategoryRepository;
 import ru.practicum.mainservice.storage.EventRepository;
 import ru.practicum.mainservice.storage.RequestRepository;
 import ru.practicum.mainservice.storage.UserRepository;
@@ -50,6 +52,7 @@ public class EventService {
     RequestRepository requestRepository;
     EventMapper eventMapper;
     RequestMapper requestMapper;
+    CategoryRepository categoryRepository;
     StatsClient statsClient = new StatsClient();
 
     public List<EventShortDto> getEvents(Integer userId, Integer from, Integer size) {
@@ -64,6 +67,11 @@ public class EventService {
         }
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
         Event toSave = eventMapper.toEvent(newEventDto);
+        if (newEventDto.getCategory() != null) {
+            Category category = categoryRepository.findById(newEventDto.getCategory())
+                    .orElseThrow(NotFoundException::new);
+            toSave.setCategory(category);
+        }
         toSave.setInitiator(user);
         toSave.setCreatedOn(LocalDateTime.now());
         toSave.setState(PENDING);
@@ -94,6 +102,11 @@ public class EventService {
             throw new ForbiddenException("Данный пользователь не создавал событие");
         }
         eventMapper.updateEvent(event, updateEventUserRequest);
+        if (updateEventUserRequest.getCategory() != null) {
+            Category category = categoryRepository.findById(updateEventUserRequest.getCategory())
+                    .orElseThrow(NotFoundException::new);
+            event.setCategory(category);
+        }
         if (updateEventUserRequest.getStateAction() == UpdateEventUserRequest.StateAction.SEND_TO_REVIEW)
             event.setState(PENDING);
         if (updateEventUserRequest.getStateAction() == UpdateEventUserRequest.StateAction.CANCEL_REVIEW)
@@ -135,18 +148,24 @@ public class EventService {
         }
         List<ParticipationRequest> requests = requestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
-        List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
-        for (int i = 0; i < requests.size(); i++) {
-            ParticipationRequest participationRequest = requests.get(i);
-            participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
-            participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
-        }
         if (eventRequestStatusUpdateRequest.getStatus() == REJECTED) {
             requests.forEach(r -> r.setStatus(REJECTED));
+            List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
+            for (int i = 0; i < requests.size(); i++) {
+                ParticipationRequest participationRequest = requests.get(i);
+                participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
+                participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
+            }
             eventRequestStatusUpdateResult.setRejectedRequests(participationRequestDtos);
             event.setConfirmedRequests(event.getConfirmedRequests() - requests.size());
         } else {
             requests.forEach(r -> r.setStatus(CONFIRMED));
+            List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
+            for (int i = 0; i < requests.size(); i++) {
+                ParticipationRequest participationRequest = requests.get(i);
+                participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
+                participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
+            }
             eventRequestStatusUpdateResult.setConfirmedRequests(participationRequestDtos);
             event.setConfirmedRequests(event.getConfirmedRequests() + requests.size());
         }
@@ -200,6 +219,11 @@ public class EventService {
                 throw new ConflictException("Cannot reject published event");
             }
             eventMapper.updateEvent(event, updateEventAdminRequest);
+            if (updateEventAdminRequest.getCategory() != null) {
+                Category category = categoryRepository.findById(updateEventAdminRequest.getCategory())
+                        .orElseThrow(NotFoundException::new);
+                event.setCategory(category);
+            }
             if (updateEventAdminRequest.getStateAction() == PUBLISH_EVENT) event.setState(PUBLISHED);
             if (updateEventAdminRequest.getStateAction() == REJECT_EVENT) event.setState(State.CANCELED);
             Event savedEvent = eventRepository.save(event);

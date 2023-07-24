@@ -19,25 +19,17 @@ import java.util.List;
 @Component
 public abstract class EventMapper {
 
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    public void setEventRepository(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
-
-    Category map(Integer value) {
-        return categoryRepository.findById(value).orElseThrow(NotFoundException::new);
-    }
-
+    @Mapping(target = "category", ignore = true)
     @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     public abstract Event toEvent(NewEventDto dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "category", ignore = true)
     @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     public abstract void updateEvent(@MappingTarget Event entity, UpdateEventAdminRequest dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "category", ignore = true)
     @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     public abstract void updateEvent(@MappingTarget Event entity, UpdateEventUserRequest dto);
 
