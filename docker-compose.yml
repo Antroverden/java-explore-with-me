@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   stats-server:
-    build: stats
+    build: stats/server
     container_name: stats-server
     ports:
       - "9090:9090"
@@ -35,3 +35,4 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: ewm-db
+    command: -p 5433
