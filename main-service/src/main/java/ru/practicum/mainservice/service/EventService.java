@@ -110,7 +110,13 @@ public class EventService {
         } else {
             requests = requestRepository.findAllByRequester_IdAndEvent_Id(userId, eventId);
         }
-        return requestMapper.toParticipationRequestDtos(requests);
+        List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
+        for (int i = 0; i < requests.size(); i++) {
+            ParticipationRequest participationRequest = requests.get(i);
+            participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
+            participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
+        }
+        return participationRequestDtos;
     }
 
     public EventRequestStatusUpdateResult changeEventRequests(
@@ -129,13 +135,19 @@ public class EventService {
         }
         List<ParticipationRequest> requests = requestRepository.findAllById(eventRequestStatusUpdateRequest.getRequestIds());
         EventRequestStatusUpdateResult eventRequestStatusUpdateResult = new EventRequestStatusUpdateResult();
+        List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
+        for (int i = 0; i < requests.size(); i++) {
+            ParticipationRequest participationRequest = requests.get(i);
+            participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
+            participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
+        }
         if (eventRequestStatusUpdateRequest.getStatus() == REJECTED) {
             requests.forEach(r -> r.setStatus(REJECTED));
-            eventRequestStatusUpdateResult.setRejectedRequests(requestMapper.toParticipationRequestDtos(requests));
+            eventRequestStatusUpdateResult.setRejectedRequests(participationRequestDtos);
             event.setConfirmedRequests(event.getConfirmedRequests() - requests.size());
         } else {
             requests.forEach(r -> r.setStatus(CONFIRMED));
-            eventRequestStatusUpdateResult.setConfirmedRequests(requestMapper.toParticipationRequestDtos(requests));
+            eventRequestStatusUpdateResult.setConfirmedRequests(participationRequestDtos);
             event.setConfirmedRequests(event.getConfirmedRequests() + requests.size());
         }
         eventRepository.save(event);

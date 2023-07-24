@@ -1,10 +1,9 @@
 package ru.practicum.mainservice.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
-import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.entity.ParticipationRequest;
-import ru.practicum.mainservice.entity.User;
 import ru.practicum.mainservice.model.response.ParticipationRequestDto;
 
 import java.util.List;
@@ -13,15 +12,10 @@ import java.util.List;
 @Component
 public abstract class RequestMapper {
 
+    @Mapping(target = "event", ignore = true)
+    @Mapping(target = "requester", ignore = true)
     public abstract ParticipationRequestDto toParticipationRequestDto(ParticipationRequest participationRequest);
 
-    Integer map(Event value) {
-        return value.getId();
-    }
-
-    Integer map(User value) {
-        return value.getId();
-    }
-
-    public abstract List<ParticipationRequestDto> toParticipationRequestDtos(List<ParticipationRequest> participationRequests);
+    public abstract List<ParticipationRequestDto> toParticipationRequestDtos(
+            List<ParticipationRequest> participationRequests);
 }

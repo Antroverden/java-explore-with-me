@@ -33,12 +33,6 @@ public abstract class EventMapper {
     @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     public abstract Event toEvent(NewEventDto dto);
 
-    @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    public abstract Event toEvent(UpdateEventUserRequest dto);
-
-    @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
-    public abstract Event toEvent(UpdateEventAdminRequest dto);
-
     @BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
     public abstract void updateEvent(@MappingTarget Event entity, UpdateEventAdminRequest dto);

@@ -36,7 +36,13 @@ public class RequestService {
     public List<ParticipationRequestDto> getRequests(Integer userId) {
         if (!userRepository.existsById(userId)) throw new NotFoundException("Пользователь не найден");
         List<ParticipationRequest> requests = requestRepository.findAllByRequester_Id(userId);
-        return requestMapper.toParticipationRequestDtos(requests);
+        List<ParticipationRequestDto> participationRequestDtos = requestMapper.toParticipationRequestDtos(requests);
+        for (int i = 0; i < requests.size(); i++) {
+            ParticipationRequest participationRequest = requests.get(i);
+            participationRequestDtos.get(i).setEvent(participationRequest.getEvent().getId());
+            participationRequestDtos.get(i).setRequester(participationRequest.getRequester().getId());
+        }
+        return participationRequestDtos;
     }
 
     public ParticipationRequestDto addRequest(Integer userId, Integer eventId) {
@@ -59,10 +65,11 @@ public class RequestService {
             participationRequest.setStatus((CONFIRMED));
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
         } else participationRequest.setStatus((ParticipationRequest.Status.PENDING));
-        ParticipationRequest saved = requestRepository.save(participationRequest);
-
-
-        return requestMapper.toParticipationRequestDto(saved);
+        requestRepository.save(participationRequest);
+        ParticipationRequestDto participationRequestDto = requestMapper.toParticipationRequestDto(participationRequest);
+        participationRequestDto.setRequester(participationRequest.getRequester().getId());
+        participationRequestDto.setEvent(participationRequest.getEvent().getId());
+        return participationRequestDto;
     }
 
     public ParticipationRequestDto cancelRequest(Integer userId, Integer requestId) {
@@ -73,6 +80,9 @@ public class RequestService {
         }
         participationRequest.setStatus(ParticipationRequest.Status.CANCELED);
         requestRepository.save(participationRequest);
-        return requestMapper.toParticipationRequestDto(participationRequest);
+        ParticipationRequestDto participationRequestDto = requestMapper.toParticipationRequestDto(participationRequest);
+        participationRequestDto.setRequester(participationRequest.getRequester().getId());
+        participationRequestDto.setEvent(participationRequest.getEvent().getId());
+        return participationRequestDto;
     }
 }
