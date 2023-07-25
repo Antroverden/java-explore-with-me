@@ -53,7 +53,7 @@ public class EventService {
     EventMapper eventMapper;
     RequestMapper requestMapper;
     CategoryRepository categoryRepository;
-    StatsClient statsClient = new StatsClient();
+    StatsClient statsClient;
 
     public List<EventShortDto> getEvents(Integer userId, Integer from, Integer size) {
         List<Event> events = eventRepository.findAllByInitiator_Id(userId, PageRequest.of(from / size, size))
