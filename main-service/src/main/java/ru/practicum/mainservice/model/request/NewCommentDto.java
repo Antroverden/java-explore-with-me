@@ -6,14 +6,11 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentDto {
-    Integer id;
+public class NewCommentDto {
     @NotBlank
     String text;
-    LocalDateTime created;
 }

@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
 import ru.practicum.mainservice.entity.Comment;
-import ru.practicum.mainservice.model.request.CommentDto;
-import ru.practicum.mainservice.model.request.UpdateCommentRequest;
+import ru.practicum.mainservice.model.response.CommentDto;
+import ru.practicum.mainservice.model.request.NewCommentDto;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
 @Component
 public interface CommentMapper {
 
-    Comment toComment(CommentDto dto);
+    Comment toComment(NewCommentDto dto);
 
     CommentDto toCommentDto(Comment comment);
 
     List<CommentDto> toCommentDtos(List<Comment> comments);
 
-    void updateComment(@MappingTarget Comment comment, UpdateCommentRequest dto);
+    void updateComment(@MappingTarget Comment comment, NewCommentDto dto);
 }

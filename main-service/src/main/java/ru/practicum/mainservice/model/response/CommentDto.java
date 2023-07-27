@@ -1,4 +1,4 @@
-package ru.practicum.mainservice.model.request;
+package ru.practicum.mainservice.model.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateCommentRequest {
-
+public class CommentDto {
+    Integer id;
     @NotBlank
     String text;
     LocalDateTime created;
