@@ -20,6 +20,7 @@ public class UserCommentController {
     CommentService commentService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CommentDto addCommentToEvent(@Valid @RequestBody NewCommentDto newCommentDto,
                                         @PathVariable Integer userId,
                                         @PathVariable Integer eventId) {

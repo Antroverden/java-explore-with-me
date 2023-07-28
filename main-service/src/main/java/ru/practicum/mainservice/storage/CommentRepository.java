@@ -11,9 +11,13 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     Page<Comment> findAllByEvent_Id(Integer eventId, Pageable pageable);
 
-    Optional<Comment> deleteByIdAndEvent_Id(Integer commentId, Integer eventId);
+    void deleteByIdAndEvent_Id(Integer commentId, Integer eventId);
 
-    Optional<Comment> deleteByIdAndEvent_IdAndAuthor_Id(Integer commentId, Integer eventId, Integer authorId);
+    Boolean existsByIdAndEvent_IdAndAuthor_Id(Integer commentId, Integer eventId, Integer authorId);
+
+    Boolean existsByIdAndEvent_Id(Integer commentId, Integer eventId);
+
+    void deleteByIdAndEvent_IdAndAuthor_Id(Integer commentId, Integer eventId, Integer authorId);
 
     Optional<Comment> findByIdAndEvent_IdAndAuthor_Id(Integer commentId, Integer eventId, Integer authorId);
 

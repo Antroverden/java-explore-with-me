@@ -5,18 +5,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.mainservice.entity.Comment;
 import ru.practicum.mainservice.entity.Event;
 import ru.practicum.mainservice.entity.User;
 import ru.practicum.mainservice.exception.NotFoundException;
 import ru.practicum.mainservice.mapper.CommentMapper;
-import ru.practicum.mainservice.model.response.CommentDto;
 import ru.practicum.mainservice.model.request.NewCommentDto;
+import ru.practicum.mainservice.model.response.CommentDto;
 import ru.practicum.mainservice.storage.CommentRepository;
 import ru.practicum.mainservice.storage.EventRepository;
 import ru.practicum.mainservice.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -35,7 +37,7 @@ public class CommentService {
         Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
         comment.setAuthor(user);
         comment.setEvent(event);
-        comment.setCreated(LocalDateTime.now());
+        comment.setCreated(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         commentRepository.save(comment);
         return commentMapper.toCommentDto(comment);
     }
@@ -56,13 +58,20 @@ public class CommentService {
         return commentMapper.toCommentDto(comment);
     }
 
+    @Transactional
     public void deleteComment(Integer eventId, Integer commentId) {
-        commentRepository.deleteByIdAndEvent_Id(commentId, eventId).orElseThrow(NotFoundException::new);
+        if (!commentRepository.existsByIdAndEvent_Id(commentId, eventId)) {
+            throw new NotFoundException("Данный комментарий у события с айди " + eventId + " отсутствует");
+        }
+        commentRepository.deleteByIdAndEvent_Id(commentId, eventId);
     }
 
+    @Transactional
     public void deleteComment(Integer userId, Integer eventId, Integer commentId) {
-        commentRepository.deleteByIdAndEvent_IdAndAuthor_Id(commentId, eventId, userId)
-                .orElseThrow(NotFoundException::new);
+        if (!commentRepository.existsByIdAndEvent_IdAndAuthor_Id(commentId, eventId, userId)) {
+            throw new NotFoundException("У юзера с айди " + userId + " отсутствует данный комментарий");
+        }
+        commentRepository.deleteByIdAndEvent_IdAndAuthor_Id(commentId, eventId, userId);
     }
 
     public List<CommentDto> getComments(Integer eventId, Integer from, Integer size) {

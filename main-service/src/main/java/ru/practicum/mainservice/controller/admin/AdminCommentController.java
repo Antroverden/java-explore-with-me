@@ -13,7 +13,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("admin/events/{eventId}/comment")
+@RequestMapping("/admin/events/{eventId}/comment")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AdminCommentController {
 
