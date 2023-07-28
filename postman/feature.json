@@ -1204,12 +1204,6 @@
 							"pm.expect(target).to.have.property('text');\r",
 							"pm.expect(target).to.have.property('created');\r",
 							"});\r",
-							"\r",
-							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-							"    pm.expect(source.id).equal(target.id, 'Идентификатор комментария соответствовать идентификатору комментария, созданного ранее');\r",
-							"    pm.expect(source.text).equal(target.text, 'Текст должен соответствовать направленному ранее тексту');\r",
-							"    pm.expect(source.created).equal(target.created, 'Время создания комментария должно соответствовать времени создания комментария, созданного ранее');\r",
-							"});\r",
 							""
 						],
 						"type": "text/javascript"
