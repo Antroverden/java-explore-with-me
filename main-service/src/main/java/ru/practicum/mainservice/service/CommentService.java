@@ -42,7 +42,7 @@ public class CommentService {
         return commentMapper.toCommentDto(comment);
     }
 
-    public CommentDto changeComment(Integer eventId, Integer commentId, Integer userId,
+    public CommentDto changeComment(Integer userId, Integer eventId, Integer commentId,
                                     NewCommentDto newCommentDto) {
         Comment comment = commentRepository.findByIdAndEvent_IdAndAuthor_Id(commentId, eventId, userId)
                 .orElseThrow(NotFoundException::new);
