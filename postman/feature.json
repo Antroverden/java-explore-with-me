@@ -83,7 +83,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Комментарий\"\r\n}",
+					"raw": "{\r\n    \"id\": null,\r\n    \"text\": \"Комментарий\",\r\n    \"created\": null\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -179,7 +179,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"\"\r\n}",
+					"raw": "{\r\n    \"id\": null,\r\n    \"text\": \"\",\r\n    \"created\": null\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -230,7 +230,7 @@
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -290,7 +290,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Комментарий изменен\"\r\n}",
+					"raw": "{\r\n    \"id\": null,\r\n    \"text\": \"Комментарий изменен\",\r\n    \"created\": null\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -345,7 +345,7 @@
 							"        let eventBody = rnd.getEvent(category.id);\r",
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -405,7 +405,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Комментарий изменен админом\"\r\n}",
+					"raw": "{\r\n    \"id\": null,\r\n    \"text\": \"Комментарий изменен админом\",\r\n    \"created\": null\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -456,7 +456,7 @@
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -557,7 +557,7 @@
 							"        let eventBody = rnd.getEvent(category.id);\r",
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -654,8 +654,8 @@
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        let event1 = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        await api.addComment(user.id, event.id, rnd.getWord());\r",
-							"        const comment = await api.addComment(user.id, event1.id, rnd.getWord());\r",
+							"        await api.addComment(user.id, event.id, rnd.getComment());\r",
+							"        const comment = await api.addComment(user.id, event1.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -752,7 +752,7 @@
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"uid\", user1.id)\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -854,7 +854,7 @@
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"uid\", user1.id)\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -900,7 +900,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"Комментарий изменен\"\r\n}",
+					"raw": "{\r\n    \"id\": null,\r\n    \"text\": \"Комментарий изменен\",\r\n    \"created\": null\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -956,7 +956,7 @@
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"uid\", user.id)\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -1002,7 +1002,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"\"\r\n}",
+					"raw": "{\r\n    \"id\": null,\r\n    \"text\": \"\",\r\n    \"created\": null\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1057,7 +1057,7 @@
 							"        let eventBody = rnd.getEvent(category.id);\r",
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        const comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        const comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set(\"cid\", comment.id)\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
@@ -1103,7 +1103,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"text\": \"\"\r\n}",
+					"raw": "{\r\n    \"id\": null,\r\n    \"text\": \"\",\r\n    \"created\": null\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1154,10 +1154,10 @@
 							"        let eventBody = rnd.getEvent(category.id);\r",
 							"        let event = await api.addEvent(user.id, eventBody);\r",
 							"        pm.collectionVariables.set(\"eid\", event.id)\r",
-							"        comment = await api.addComment(user.id, event.id, rnd.getWord());\r",
+							"        comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.collectionVariables.set('response', comment);\r",
-							"        await api.addComment(user.id, event.id, rnd.getWord());\r",
-							"        await api.addComment(user1.id, event.id, rnd.getWord());\r",
+							"        await api.addComment(user.id, event.id, rnd.getComment());\r",
+							"        await api.addComment(user.id, event.id, rnd.getComment());\r",
 							"        pm.request\r",
 							"    } catch(err) {\r",
 							"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
@@ -1372,6 +1372,14 @@
 					"        return {",
 					"            name: pm.variables.replaceIn('{{$randomFullName}}'),",
 					"            email: pm.variables.replaceIn('{{$randomEmail}}')",
+					"        };",
+					"    }",
+					"",
+					"    getComment() {",
+					"        return {",
+					"            id: null,",
+					"            text: pm.variables.replaceIn('{{$randomWord}}'),",
+					"            created: null",
 					"        };",
 					"    }",
 					"",

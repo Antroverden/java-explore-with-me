@@ -30,7 +30,7 @@ public class CommentService {
     UserRepository userRepository;
     EventRepository eventRepository;
 
-    public ru.practicum.mainservice.model.response.CommentDto addCommentToEvent(CommentDto commentDto, Integer userId, Integer eventId) {
+    public CommentDto addCommentToEvent(CommentDto commentDto, Integer userId, Integer eventId) {
         Comment comment = commentMapper.toComment(commentDto);
         User user = userRepository.findById(userId).orElseThrow(NotFoundException::new);
         Event event = eventRepository.findById(eventId).orElseThrow(NotFoundException::new);
@@ -41,8 +41,8 @@ public class CommentService {
         return commentMapper.toCommentDto(comment);
     }
 
-    public ru.practicum.mainservice.model.response.CommentDto changeComment(Integer userId, Integer eventId, Integer commentId,
-                                                                            CommentDto commentDto) {
+    public CommentDto changeComment(Integer userId, Integer eventId, Integer commentId,
+                                    CommentDto commentDto) {
         Comment comment = commentRepository.findByIdAndEvent_IdAndAuthor_Id(commentId, eventId, userId)
                 .orElseThrow(NotFoundException::new);
         commentMapper.updateComment(comment, commentDto);
@@ -50,7 +50,7 @@ public class CommentService {
         return commentMapper.toCommentDto(comment);
     }
 
-    public ru.practicum.mainservice.model.response.CommentDto changeComment(Integer eventId, Integer commentId, CommentDto commentDto) {
+    public CommentDto changeComment(Integer eventId, Integer commentId, CommentDto commentDto) {
         Comment comment = commentRepository.findByIdAndEvent_Id(commentId, eventId).orElseThrow(NotFoundException::new);
         commentMapper.updateComment(comment, commentDto);
         commentRepository.save(comment);
@@ -73,7 +73,7 @@ public class CommentService {
         commentRepository.deleteByIdAndEvent_IdAndAuthor_Id(commentId, eventId, userId);
     }
 
-    public List<ru.practicum.mainservice.model.response.CommentDto> getComments(Integer eventId, Integer from, Integer size) {
+    public List<CommentDto> getComments(Integer eventId, Integer from, Integer size) {
         List<Comment> comments = commentRepository.findAllByEvent_Id(eventId, PageRequest.of(from / size, size))
                 .getContent();
         return commentMapper.toCommentDtos(comments);

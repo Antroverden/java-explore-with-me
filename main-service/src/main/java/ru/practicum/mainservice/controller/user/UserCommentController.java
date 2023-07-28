@@ -20,17 +20,17 @@ public class UserCommentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ru.practicum.mainservice.model.response.CommentDto addCommentToEvent(@Valid @RequestBody CommentDto commentDto,
-                                                                                @PathVariable Integer userId,
-                                                                                @PathVariable Integer eventId) {
+    public CommentDto addCommentToEvent(@Valid @RequestBody CommentDto commentDto,
+                                        @PathVariable Integer userId,
+                                        @PathVariable Integer eventId) {
         return commentService.addCommentToEvent(commentDto, userId, eventId);
     }
 
     @PatchMapping("{commentId}")
-    public ru.practicum.mainservice.model.response.CommentDto changeComment(@Valid @RequestBody CommentDto commentDto,
-                                                                            @PathVariable Integer userId,
-                                                                            @PathVariable Integer eventId,
-                                                                            @PathVariable Integer commentId) {
+    public CommentDto changeComment(@Valid @RequestBody CommentDto commentDto,
+                                    @PathVariable Integer userId,
+                                    @PathVariable Integer eventId,
+                                    @PathVariable Integer commentId) {
         return commentService.changeComment(userId, eventId, commentId, commentDto);
     }
 
