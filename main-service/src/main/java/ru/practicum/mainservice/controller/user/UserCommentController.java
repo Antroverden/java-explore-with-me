@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.mainservice.model.request.NewCommentDto;
 import ru.practicum.mainservice.model.response.CommentDto;
 import ru.practicum.mainservice.service.CommentService;
 
@@ -21,18 +20,18 @@ public class UserCommentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentDto addCommentToEvent(@Valid @RequestBody NewCommentDto newCommentDto,
-                                        @PathVariable Integer userId,
-                                        @PathVariable Integer eventId) {
-        return commentService.addCommentToEvent(newCommentDto, userId, eventId);
+    public ru.practicum.mainservice.model.response.CommentDto addCommentToEvent(@Valid @RequestBody CommentDto commentDto,
+                                                                                @PathVariable Integer userId,
+                                                                                @PathVariable Integer eventId) {
+        return commentService.addCommentToEvent(commentDto, userId, eventId);
     }
 
     @PatchMapping("{commentId}")
-    public CommentDto changeComment(@Valid @RequestBody NewCommentDto newCommentDto,
-                                    @PathVariable Integer userId,
-                                    @PathVariable Integer eventId,
-                                    @PathVariable Integer commentId) {
-        return commentService.changeComment(userId, eventId, commentId, newCommentDto);
+    public ru.practicum.mainservice.model.response.CommentDto changeComment(@Valid @RequestBody CommentDto commentDto,
+                                                                            @PathVariable Integer userId,
+                                                                            @PathVariable Integer eventId,
+                                                                            @PathVariable Integer commentId) {
+        return commentService.changeComment(userId, eventId, commentId, commentDto);
     }
 
     @DeleteMapping("/{commentId}")
