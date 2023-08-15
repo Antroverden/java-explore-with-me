@@ -12,7 +12,7 @@ Explore with me - приложение с микросервисной архи�
 
 1) Склонируйте репозиторий и перейдите в него
 ```
-git clone https://github.com/Antroverden/test-gts.git
+git clone https://github.com/Antroverden/java-explore-with-me.git
 ```
 2) Запустите проект в Intellij IDEA или введите в консоли
 ```
